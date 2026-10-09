@@ -1,0 +1,39 @@
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Never publish local configuration/secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+*.key
+*.secret
+
+# Raw diagnostic captures, temporary working data, compiled binaries
+*.log
+*.jsonl
+*.sqlite
+*.sqlite3
+*.db
+*.dmp
+*.dump
+*.exe
+*.dll
+*.pdb
+*.zip
+*.7z
+*.rar
+*.wav
+*.mp3
+
+# Unintended local folders
+__pycache__/
+.venv/
+build/
+dist/
+target/
