@@ -18,7 +18,7 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 ## Independently stoppable Windows audio voices — standalone proof, not TFM2 integration
 
-**Runtime verified (user auditory report, 2026-10-09):** Berserker *Audio Voice Probe A* ran as a separate Windows process (Rust `src/bin/voice_probe.rs`; OS **WinMM** `waveOut`, not XAudio2). It generated two low-level, 16-bit PCM notes (440 and ~659 Hz), started them on separate output handles, reset the first handle after about 0.9 s and the second after about 2.1 s. The owner's direct report: **"I heard two tones, then one then silence."** That is evidence that one sound stopped while the other continued audibly in this standalone setup.
+**Runtime verified (user auditory report, 2026-10-09):** Berserker *Audio Voice Probe A* ran as a separate Windows process (Rust `src/bin/voice_probe.rs`; OS **WinMM** `waveOut`, not XAudio2). It generated two low-level, 16-bit PCM notes (440 and ~659 Hz), started them on separate output handles, reset the first handle after about 0.9 s and the second after about 2.1 s. The tester reported hearing **both tones, then one tone, then silence**. That is evidence that one sound stopped while the other continued audibly in this standalone setup.
 
 **Not verified:** running concurrently with TFM2's own audio, running inside a mod DLL, game master/SFX volume integration, measured stop latency, replay pause/seek handling, lifecycle cleanup under stress, or XAudio2 behavior. This test demonstrates a **general Windows per-handle audio capability**, not a game SDK stop handle and not a final WinMM backend decision.
 
