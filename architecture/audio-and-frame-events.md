@@ -1,6 +1,6 @@
 # Gameplay buff observations versus audible playback
 
-**Status:** Runtime verified on **TFM2 0.6.3 / stable ABI 9**, from Berserker Keeps Yelling Probes 001–006 (2026-10-09). **Unresolved in TFM2:** sample-accurate playback tick, per-voice stop in the game process, and native death event ordering. **Standalone Windows voice-stop feasibility now runtime verified** (Audio Voice Probe A, 2026-10-09).
+**Status:** Runtime verified on **TFM2 0.6.3 / stable ABI 9**, from Berserker Keeps Yelling Probes 001–006 (2026-10-09). **Unresolved:** sample-accurate replay cursor, Rage/death-triggered voice stops, independent game-audio volume/mute integration, and native death event ordering. **In-process individual WinMM voice stop is now runtime verified on 0.6.3** (Probe 007), with controlled synthetic audio only.
 
 ## Simulation state is not the playback clock
 
@@ -28,6 +28,14 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 **Runtime verified (audible tones, 2026-10-09):** the owner repeated the standalone WinMM dual-handle test with TFM2 running, using an optional startup delay, and again heard two tones, followed by one, then silence. This reinforces that independent stopping is reproducible while TFM2 is open. **No explicit report confirmed whether TFM2's own sound remained continuously audible, unducked or unaffected.** The test still ran in a separate process, not inside the mod DLL. Probe 007 is an **unverified source-only** experiment designed to test F10-triggered WinMM audio handles inside the existing stable-client extension. Its compilation, mixer behavior and cleanup are pending.
 
+### In-process voice ownership confirmed in TFM2 0.6.3 (Probe 007)
+
+**Runtime verified (2026-10-09; SDK ABI 9, Berserker v0.0.7):** During visible playback, a single **F10** request in the stable-client mod extension started two self-generated **WinMM** PCM tones from within TFM2's process. Diagnostic callbacks requested independent `waveOutReset` stops at **903 ms** and **2,105 ms** after starting; the tester confirmed audibly **two tones → one tone → silence**. There were no recorded WinMM error markers and the match view's visible HUD continued advancing after the test.
+
+**Scope:** This proves independent in-process audio stopping under one manually initiated synthetic test, **not exact speaker-end latency**, interruption driven by an actual Berserker Rage/death event, pause/seek correctness, native game-audio coexistence, mixer mute/volume linkage, XAudio2 support, or safe scene exit/unload behavior. In particular, the user did not explicitly confirm whether normal game sound remained uninterrupted. The sound was started on F10, *not* from presimulation ticks.
+
+Originating private source: Berserker Keeps Yelling `docs/PROBE-007-FINDINGS.md` (game 0.6.3, probe 0.0.7). No raw log or proprietary recording copied here.
+
 ## Playback-clock UI negative experiment
 
 - Probe 005 depth-first UI scan was **inconclusive**: it exhausted 1,202 nodes / 36 matches, mostly on unrelated athlete/champion *speed* labels. Twenty-nine samples returned no slider ratios.
@@ -39,7 +47,7 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 1. Separate presimulation tick, rendered replay cursor, monotonic wall time, scene epoch, and champion identity. The HUD's integer seconds are insufficient for a 179-tick effect's exact entry/exit.
 2. Use native presentation-state investigation (exact build fingerprint and fail-closed reads) instead of repeating an unchanged UI traversal.
-3. Two standalone WinMM listening tests, one with TFM2 open, have **audibly proven independent per-handle stopping**; next prove uninterrupted game-audio coexistence and controlled in-process lifetime. Windows XAudio2 source voices remain a **documented but untested alternative**, with game volume integration unknown.
+3. Two standalone WinMM tests plus a TFM2 0.6.3 **in-process F10 test** confirmed independent per-handle stopping. Next test early/manual interrupts, scene exit/cleanup and **uninterrupted native game audio**; do not treat this as a fully integrated Rage engine. Windows XAudio2 source voices remain a **documented but untested alternative**, with game volume integration unknown.
 4. Prove true death callback/order and multiple-Berserker handling. Despawn is not the same as an observed death.
 
 **Source reports (private project, titles only):** `TFM2-Berserker-Keeps-Yelling/docs/PROBE-003-FINDINGS.md`, `PROBE-004-FINDINGS.md`, `PROBE-005-FINDINGS.md`, and `PROBE-006-FINDINGS.md`, plus `AUDIO-VOICE-PROBE-A-FINDINGS.md`. The originating repository is currently private; no private deep links, raw logs, or proprietary assets are republished here.
