@@ -1,11 +1,33 @@
 # Gameplay buff observations versus audible playback
 
-**Status: buff/timeline observation verified on 0.6.3; sound-event delivery remains unproven in the cited Probe 003 runbook.** Sources: Berserker Probe 001 (Berserker Keeps Yelling source; private repository), 002 (Berserker Keeps Yelling source; private repository), 003 runbook (Berserker Keeps Yelling source; private repository).
+**Status:** Runtime verified on **TFM2 0.6.3 / stable ABI 9**, from Berserker Keeps Yelling Probes 001–006 (2026-10-09). **Unresolved:** sample-accurate playback tick, mid-clip voice stop, and native death event ordering.
 
-Probe 001 measured 37 complete `berserker_skill1` buff intervals, each 179 sampled simulation ticks; Probe 002 measured 40 complete intervals, again all 179 ticks. This identifies a reliable **Rage-like buff candidate**, not yet an independently proven audio cue or fully verified exact Rage identity. Disappearing entities were last observed alive with nonzero HP; these probes did not directly prove an in-Rage death transition.
+## Simulation state is not the playback clock
 
-In Probe 002, watched simulation reached tick 36,471 while visible HUD showed 00:47, establishing why starting sound directly from the watched-simulation callback would be badly out of sync.
+Berserker's observed `berserker_skill1` buff repeatedly lasted exactly **179 simulation ticks** for naturally completed intervals. Probe 006 recorded **91 additions**, **88 normal removals**, and three disappearances while the buff was active. The disappearances reported nonzero previous-tick HP and `alive=true`: they are *death/despawn candidates*, not verified death events. The 179-tick buff remains a **strong Rage candidate**, not a visually cross-validated Rage identification.
 
-The stable API documentation described `StableSim::play_sfx(name, caster_id, target)` as a recorded frame event and a client-side `StableClient::play_sound(path, volume)` without a documented individual voice-stop handle. The proposed Probe 003 tests a quiet synthetic ping from each pathway, with a tick-600 frame event expected around visible 00:10. **This is a test plan, not a reported successful audible result.**
+Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) while the visible HUD was only at **00:47**. Simulation callbacks therefore cannot trigger audible clips at the observed tick without a separate presentation-time mechanism.
 
-Do not build uninterruptible long playback on the assumption that the frame-event API supports stopping an individual voice, seeking, or guaranteed one-shot death handling. Those are separate proof targets.
+## Sound-event APIs are not interchangeable
+
+**Runtime verified:** Probe 003 played a quiet mod-owned synthetic WAV via `StableClient::play_sound(path, volume)` on F8; the owner heard it. Probe 004 then played the same file through a HUD-clock-triggered `play_sound` at visible **00:10**, and the owner heard both the manual and automatic beeps. This demonstrates **coarse client presentation-time one-shot audio**, not precise replay scheduling.
+
+**Runtime negative evidence:** Probe 003 called `StableSim::play_sfx(name, caster_id, target)` from the scheduled match hook at tick 600, but the owner could not hear the expected 00:10 sound. The official [stable API](https://github.com/teamsamoyed/TeamfightManager2Mod/blob/main/docs/stable-api-reference.md) describes `play_sfx` as a *view-effect name* that must already have a corresponding client binding. The experiment instead used a custom **file path**. That binding mismatch is a **plausible explanation, not proved exclusive cause**. It does not disprove the properly bound frame-event pipeline.
+
+**API documentation evidence:** `play_sound` has no documented individual sound voice handle or per-voice stop operation. Do **not** assume arbitrary 3+ second sounds can be interrupted using this method. Do not hijack global `play_bgm` / `stop_bgm` for independent champion voices.
+
+## Playback-clock UI negative experiment
+
+- Probe 005 depth-first UI scan was **inconclusive**: it exhausted 1,202 nodes / 36 matches, mostly on unrelated athlete/champion *speed* labels. Twenty-nine samples returned no slider ratios.
+- Probe 006 replaced it with a bounded **breadth-first** SDK UI scan (max depth 13, 12k-node limit, 150 nodes/client update). It **drained its queue after 3,189 visited nodes** (`truncated=false`) and collected **30** subsequent samples.
+- No retained candidate was a slider runner; all 30 samples had `ratios=[]`. Only the whole-second `ingame.header.game_time.value` was identified as a useful time label.
+- **Scope:** no high-resolution playback cursor was found **in the UI tree exposed to this scan**. This does not prove the native replay has no fine-grained cursor or that deeper/inaccessible UI state does not exist.
+
+## Implications and remaining tests
+
+1. Separate presimulation tick, rendered replay cursor, monotonic wall time, scene epoch, and champion identity. The HUD's integer seconds are insufficient for a 179-tick effect's exact entry/exit.
+2. Use native presentation-state investigation (exact build fingerprint and fail-closed reads) instead of repeating an unchanged UI traversal.
+3. Before long voice clips, prove independent **owned** audio start/stop/pause/cleanup using a generated sample. Windows XAudio2 source voices are a **documented OS-level candidate**, not a TFM2-tested integration; own-game volume settings and mix coexistence need verification.
+4. Prove true death callback/order and multiple-Berserker handling. Despawn is not the same as an observed death.
+
+**Source reports:** [Berserker Probe 003 findings](https://github.com/patrickehopkins/TFM2-Berserker-Keeps-Yelling/blob/main/docs/PROBE-003-FINDINGS.md), [Probe 004 findings](https://github.com/patrickehopkins/TFM2-Berserker-Keeps-Yelling/blob/main/docs/PROBE-004-FINDINGS.md), [Probe 005 findings](https://github.com/patrickehopkins/TFM2-Berserker-Keeps-Yelling/blob/main/docs/PROBE-005-FINDINGS.md), [Probe 006 findings](https://github.com/patrickehopkins/TFM2-Berserker-Keeps-Yelling/blob/main/docs/PROBE-006-FINDINGS.md). Raw logs remain in the original project workflow and are not copied here.
