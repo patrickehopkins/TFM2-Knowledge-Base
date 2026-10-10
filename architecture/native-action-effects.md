@@ -1,0 +1,36 @@
+# Native action timing and effect execution — TFM2 0.6.3
+
+**Status: STATIC EVIDENCE for native action paths; RUNTIME VERIFIED only for original champion Knight W acceptance/effect timing.**  
+**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J and **corrective Probe 010K-4**, studied 2026-10-08 to 2026-10-09. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
+
+**Exact Windows build constraint:** Teamfight Manager 2 **0.6.3**, original game EXE SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; PE timestamp `0x6AC5C567`; SizeOfImage `0x052D6000`. These are **native addresses and offsets, not SDK-stable ABI**. Re-identify instructions, jump tables, ownership and field layout for every other build.
+
+## What has been established
+
+The game has an original per-entity action representation, native cached refcounted effect specifications, and an **original 0x38-byte ready-effect vector** local to the simulation-state processor. Different entity kinds can generate records into that common final effect pipeline. The native callback is an effect-object virtual method **`vtable+0x20`** called in original simulation code at VA **`0x1416FB44F`**.
+
+- **Ordinary native kind-3 lane-minion attack (STATIC):** its original action slot A (`entity+0x568/+0x570`) has an active-action/timing path which constructs a ready record from its cached slot-A effect spec (`entity+0x488`) at VA **`0x1416F8372–0x1416F83DA`**, via original append helper **`0x1416E8730`**. Its runtime action is a concrete `target_attack` type, but the melee action's vtable and effect callback are **not** identical to a champion's identically named attack. The ready records are processed through the same effect-object dispatcher as champion effects.
+- **Original kind-15 champion Knight W (STATIC):** the accepted *deferred* W action-start route sets `entity+0x70=5`, initializes **progress `entity+0x78=0`**, and stores a native **24-byte tagged target at `entity+0x88..+0x9F`**. This target is prepared by original helper VA **`0x14140A6A0`**, which copies targets of tag other than 2 and may clamp position-tag 2 relative to caster coordinates and range.
+- **Original champion W timed effect (STATIC):** kind-15 action state 5 selects slot C W at VA **`0x1416F7F68`**. The original W-specific branch **`0x1416F7FF6` unconditionally jumps to `0x1416FAEE3`**, where effect timing is calculated. The comparison at **`0x1416FAF0D`** uses **actual W progress `entity+0x78`**. On phase equality, the original effect is retained/refcounted, source identity `entity+0x5B8` and the target **from the same `+0x88..+0x9F` region** are packaged; VA **`0x1416FAF7A`** appends a genuine ready-effect record via `0x1416E8730` for original callback dispatch.
+- **Original W progress and completion (STATIC):** the same native simulation-state function dispatches kind 15 again (kind update jump table RVA **`0x03BB40BC`**), and its state-5 update branch at VA **`0x1416FD3F1–0x1416FD3F8`** **increments `entity+0x78`**, compares against a native calculated completion duration and, on completion, reaches **`0x1416FD44D`** which resets action state 5 to 0. This is a **normal action-duration completion route**, not proof of death/cancellation semantics.
+- **Conditional alternate scheduler (STATIC):** the original champion W action-entry method also contains a separate original condition-controlled path which can enqueue a refcounted effect in an entity-owned 0x38-byte **pending countdown queue** at `entity+0x2A0/+0x2A8/+0x2B0`. This **is not the only native W path**. The common effect processor can consume such records, including in kind-3 processing; that consumer reachability **does not prove a minion can legitimately produce W records**.
+- **Original entity action and pending-effect lifetime (STATIC):** native entity cloning uses action-specific clone methods for five action slots and retains cached effects; a full entity clone duplicates pending effect records into independent queue storage with retained effect-object references. Common entity teardown releases those objects. A stored vtable address alone is therefore not a safe ability installer.
+
+## Physical observations versus code-path proof
+
+Creep Chaos **v0.0.18** Windows Probe 010J physically recorded **78 watched original Knight W attempt entries**, **50 native W cooldown commitments**, and **50 genuine native W shield callbacks exactly 12 simulation ticks after commitment**. During the synchronous W-start observation, the watched entity had **pending queue length 0 before/after and capacity 0 on all 78 attempts**. This is *consistent with* the separate native active-action ready-effect path; it **does not** prove every observed cast's specific branch/phase or a visible replay timestamp. The prior v0.0.17 observer returned zero apparent appends because it collapsed multiple outcomes; this was an **instrumentation false negative**, not evidence that native W effects failed.
+
+## Important negative result — misidentified W target/progress fields
+
+**REJECTED / SUPERSEDED 2026-10-09:** an earlier Creep Chaos static report assigned block **`0x1416F88D2–0x1416F896A`** to Knight W and consequently described W progress as `entity+0xA0` and W effect-time target at `entity+0xA8..+0xBF`. Although its opcode assertions passed, **the required control-flow edge was wrong**. The real W branch at `0x1416F7FF6` jumps to **`0x1416FAEE3`**, and original W consistently uses **`+0x78` progress and `+0x88..+0x9F` target** from start to effect. The other block exists but its action/variant ownership is **not classified** by these studies. This is an example of why instruction-byte verification alone does not prove a semantic call path.
+
+**Reproduction (STATIC):** Creep Chaos `docs/PROBE-010K4-W-PHASE-CORRECTION.md` and `scripts/verify-probe010k4-w-phase-and-completion.py` verify **50 original instruction anchors, four exact kind/state jump-table destinations and three exact original branch/call targets: 57/57 PASS** against the fingerprinted 0.6.3 game executable. No original executable, source assets, or user runtime logs are included in this knowledge base.
+
+## Still unverified
+
+- An original **kind-3 minion** owning, selecting, starting or cooling down a **genuine champion W** in a second action slot, without losing its native basic attack, creep behavior or economy.
+- Original W effect-specific downstream acceptance of a **kind-3 origin**, valid targeting, interruption/death, and cleanup in a live match.
+- Deterministic multiplayer or authoritative all-simulation-copy mutation; watched simulation/replay presentation observations are **not gameplay authority**.
+- The actual per-cast intermediate W phase values behind the physically observed T+12 shield result, or an exact presentation-frame timestamp.
+
+**Safety rule:** never spoof a minion's `kind` to champion 15, write raw vtable pointers or manually manufacture an effect packet solely from the offsets above. Any future native observer must use exact binary/prologue/caller guards, scoped simulation identity, read-only bounded logging, rollback criteria and independent runtime testing. Hooks targeting the same original method can conflict across mods.
