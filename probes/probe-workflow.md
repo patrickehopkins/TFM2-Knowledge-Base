@@ -38,3 +38,14 @@ A reviewed initial scanning design collected memory-field matches from `.pdata`-
 6. Treat `.pdata`-covered code as **nonexhaustive**: indirect calls, inlined paths, code outside the scanned ranges and whole-record copies can evade the census.
 
 **Limits:** The pure synthetic scanner scoring/fingerprint-gate tests were run on a locally equivalent implementation; the original 0.6.3 game executable and full Capstone scan were unavailable in this session. Therefore this section records a **verified code-design correction and untested game-scan plan**, not a found minion skill installer. The full project-specific scan plan belongs to Creep Chaos `docs/PROBE-010L-ACTION-INSTALLATION-RECON.md` (private source). Other TFM2 mods can reuse the review principle without adopting its exact offsets.
+
+### Probe 010L-3 bounded scan: positive controls and access-metadata correction
+
+**Evidence: user-executed offline scan report, static/report-level verification only; no in-game observation.** In Creep Chaos Probe 010L-3 (2026-10-09), a SHA-guarded read-only scanner reported **154,191** `.pdata` functions, **13,747,032** decoded instructions and **20,412** candidate references/call edges from original TFM2 0.6.3 Win64 (reported SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; timestamp `0x6AC5C567`, image size `0x052D6000`). The executable itself was **not independently rescanned** in the reviewing session. The scanner recovered **previously mapped** champion constructor, entity-clone, action-cache and Knight W consumer reference sites: this was a *positive-control sensitivity check*, not discovery of a kind-3 installer.
+
+Two negative findings apply broadly to static instrumentation:
+
+- **Similar displacement does not imply similar object:** among reported matches, some candidate `+0x590` vtable writes actually stored tiny integer constants (e.g., 2), and hundreds used large offsets from stack-frame register `rbp`. Without base-pointer provenance and value/type consistency, a memory reference should **not** be promoted to an entity-slot writer.
+- **Disassembler access flags may be wrong:** the tool labeled a memory-destination `movups [rbp+0x590], xmm0` as a read. The scanner was corrected to recognize explicit memory-destination move stores, retaining the misclassification as a documented negative result. Re-run the real scan before claiming corrected category counts.
+
+The 5,000-record output cap also omitted **102** detected direct calls/jumps because those lower-priority entries were displaced by field references. Subsequent tooling retains direct-call matches separately even when the main report is truncated. **No live setter, minion-origin native W cast, or per-minion ability cooldown has been proven.** Original project details remain in Creep Chaos `docs/PROBE-010L3-CENSUS-FINDINGS.md`; no private logs or executable bytes are published here.
