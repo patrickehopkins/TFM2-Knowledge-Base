@@ -10,6 +10,7 @@ Independent, **version-sensitive** research into Teamfight Manager 2 (TFM2) modd
 - [Simulation and replay separation](architecture/simulation-and-replay.md)
 - [Camera and input](architecture/camera-and-input.md)
 - [Native creep and champion presentation](architecture/creep-presentation.md)
+- [Native action timing and effect processing](architecture/native-action-effects.md)
 - [Athlete identity and tendencies](architecture/athletes-and-traits.md)
 - [Buffs and playback audio](architecture/audio-and-frame-events.md)
 - [Stable SDK boundaries](sdk-and-loader/stable-api-surfaces.md)
