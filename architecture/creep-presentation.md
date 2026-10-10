@@ -10,6 +10,8 @@ Probe 006 physically changed the world base resource to Knight, but the renderer
 
 Probe 008 paired two hooks: world-resource resolver RVA `0x0230AB20` and animation-key resolver RVA `0x02313A30` for the exact 0.6.3 fingerprint. The bridge rewrote composite names to base actions. The paired hook installation and actual substitutions were observed in runtime logs; screenshots showed animated Knight-bodied creeps.
 
+> **Later research, separate status:** original kind-3 minion attacks and original kind-15 champion Knight W have statically mapped access to the same native ready-effect dispatcher; see [native action/effect research](native-action-effects.md) for the exact 0.6.3 evidence and corrected W state-5 progress path. **No champion ability cast by a native minion has been verified.**
+
 ## Important boundary
 
 This demonstrates **visual resource compatibility and a deterministic per-minion proof-state cooldown**. It does *not* prove native creeps can execute Knight's full built-in champion skill pipeline, target champions under all ability rules, or support generalized hero selection, scaling, ranged/siege/jungle variants. The tested counter `post_cc_visible` remained zero, so custom CC persistence was **not** established by this probe.
