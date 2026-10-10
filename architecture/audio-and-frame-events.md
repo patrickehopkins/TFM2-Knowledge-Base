@@ -24,6 +24,10 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 **Next control:** repeat the *same unmodified standalone executable* while TFM2 plays ordinary match audio and check that game sound remains audible/unaffected. Then, if useful, evaluate a modern owned XAudio2 voice inside the mod under strict version/mixer/lifecycle tests. For exact Rage interruption timing, native *presentation* playback tracking still remains separate.
 
+### Standalone follow-up with TFM2 running
+
+**Runtime verified (audible tones, 2026-10-09):** the owner repeated the standalone WinMM dual-handle test with TFM2 running, using an optional startup delay, and again heard two tones, followed by one, then silence. This reinforces that independent stopping is reproducible while TFM2 is open. **No explicit report confirmed whether TFM2's own sound remained continuously audible, unducked or unaffected.** The test still ran in a separate process, not inside the mod DLL. Probe 007 is an **unverified source-only** experiment designed to test F10-triggered WinMM audio handles inside the existing stable-client extension. Its compilation, mixer behavior and cleanup are pending.
+
 ## Playback-clock UI negative experiment
 
 - Probe 005 depth-first UI scan was **inconclusive**: it exhausted 1,202 nodes / 36 matches, mostly on unrelated athlete/champion *speed* labels. Twenty-nine samples returned no slider ratios.
@@ -35,7 +39,7 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 1. Separate presimulation tick, rendered replay cursor, monotonic wall time, scene epoch, and champion identity. The HUD's integer seconds are insufficient for a 179-tick effect's exact entry/exit.
 2. Use native presentation-state investigation (exact build fingerprint and fail-closed reads) instead of repeating an unchanged UI traversal.
-3. A standalone WinMM test has **audibly proven independent per-handle stopping**; next prove coexistence with game audio and controlled in-process lifecycle. Windows XAudio2 source voices remain a **documented but untested alternative**, with game volume integration unknown.
+3. Two standalone WinMM listening tests, one with TFM2 open, have **audibly proven independent per-handle stopping**; next prove uninterrupted game-audio coexistence and controlled in-process lifetime. Windows XAudio2 source voices remain a **documented but untested alternative**, with game volume integration unknown.
 4. Prove true death callback/order and multiple-Berserker handling. Despawn is not the same as an observed death.
 
 **Source reports (private project, titles only):** `TFM2-Berserker-Keeps-Yelling/docs/PROBE-003-FINDINGS.md`, `PROBE-004-FINDINGS.md`, `PROBE-005-FINDINGS.md`, and `PROBE-006-FINDINGS.md`, plus `AUDIO-VOICE-PROBE-A-FINDINGS.md`. The originating repository is currently private; no private deep links, raw logs, or proprietary assets are republished here.
