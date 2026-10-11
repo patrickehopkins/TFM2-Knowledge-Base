@@ -1,7 +1,7 @@
 # Native action timing and effect execution — TFM2 0.6.3
 
 **Status: STATIC EVIDENCE for native action paths; RUNTIME VERIFIED only for original champion Knight W acceptance/effect timing.**  
-**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, **010M-1** static selector contrast, **010M-2** kind-dispatch verification, **010M-3** spatial-callee follow-up, **010N-1** caller topology, **010N-2** vector-handoff classification, **010N-3** upstream caller comparison, **010N-4** post-builder cached-spec refresh, **010N-5** receiver/teardown classification, **010N-6** temporary action-aware destruction, **010N-7** delegated kind release/stack flag evidence, **010N-8** kind-3 destructor-table/flag read negative, **010N-9** native unwind handler metadata, and **010N-10** opaque per-function EH prefix contrast, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
+**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, **010M-1** static selector contrast, **010M-2** kind-dispatch verification, **010M-3** spatial-callee follow-up, **010N-1** caller topology, **010N-2** vector-handoff classification, **010N-3** upstream caller comparison, **010N-4** post-builder cached-spec refresh, **010N-5** receiver/teardown classification, **010N-6** temporary action-aware destruction, **010N-7** delegated kind release/stack flag evidence, **010N-8** kind-3 destructor-table/flag read negative, **010N-9** native unwind handler metadata, **010N-10** opaque per-function EH prefix contrast, and **010N-11** legacy C++ FuncInfo header match, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
 
 **Exact Windows build constraint:** Teamfight Manager 2 **0.6.3**, original game EXE SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; PE timestamp `0x6AC5C567`; SizeOfImage `0x052D6000`. These are **native addresses and offsets, not SDK-stable ABI**. Re-identify instructions, jump tables, ownership and field layout for every other build.
 
@@ -163,6 +163,25 @@ Across the three original post-minion-registration paths, a **stack-local compil
 - **Critical negative:** Matching opaque bytes/words is *not a parsed language-specific exception table*. The report does not identify compiler flag readers, a cleanup funclet, a Rust/MSVC move-disarm protocol, ordinary-run ownership retention, or any authority to attach a refcounted champion W action to a kind-3 minion.
 
 **Next proposed test, prepared but unexecuted:** 010N-11 confirms whether the four leading words denote **file-backed original RVAs** and samples a maximum of four undecoded words at each location; it does not assume an EH grammar. Detailed originating Creep Chaos report `docs/PROBE-010N10-OPAQUE-EH-METADATA-FINDINGS.md`. Only sanitized generic evidence is summarized here; no proprietary binary dumps, original raw reports, private repo deep links or personal paths.
+
+## Original kind-3 construction exception metadata matches legacy C++ FuncInfo — 010N-11 (2026-10-10)
+
+**STATIC, user-executed original-build-gated evidence plus independent public toolchain documentation; NO native action ownership or casting proof.** Original TFM2 **0.6.3 Win64** EXE, reported SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`, PE timestamp `0x6AC5C567`, SizeOfImage `0x052D6000`. Probe 010N-11's user-generated JSON passed **25/25 report-level checks**; original EXE not independently re-scanned by reviewer. Four EH-data candidate RVAs from 010N-10 were **all confirmed file-backed in `.rdata`**, and all four begin with original DWORD **`0x19930522`**.
+
+Public, independent documentation confirms `0x19930522` as the **legacy Microsoft C++ EH `FuncInfo` magic**: [Microsoft C++ team on legacy x64 `FuncInfo` and FH4](https://devblogs.microsoft.com/cppblog/making-cpp-exception-handling-smaller-x64/) and [LLVM's emission of the magic, maxState and C++ unwind map](https://llvm.org/doxygen/WinException_8cpp_source.html). Under that published ten-DWORD / 40-byte layout, the original first four words have a highly consistent interpretation:
+
+| Original function | Candidate FuncInfo RVA | Magic | Candidate maxState | Candidate unwind-map RVA | Candidate nTryBlocks |
+| --- | --- | --- | ---: | --- | ---: |
+| Minion-processing Parent A | `0x04BA2C28` | `0x19930522` | **103** | `0x04BA2C50` | 0 |
+| Minion-processing Parent B | `0x04BA5928` | `0x19930522` | **66** | `0x04BA5950` | 0 |
+| Temporary native record destructor | `0x04BD2214` | `0x19930522` | **25** | `0x04BD223C` | 0 |
+| Delegated native kind-variant cleanup | `0x04BD1FB8` | `0x19930522` | **1** | `0x04BD1FE0` | 0 |
+
+Each candidate unwind-map RVA is **exactly 0x28 bytes after its candidate FuncInfo header**, reinforcing the published 40-byte layout. This changes the earlier 010N-10 **“opaque first-word structure”** status: these **four specific header prefixes now strongly match legacy C++ `FuncInfo`**, but the **remaining six header words, map contents, cleanup-target semantics and exact compiler flag readers were NOT yet analyzed**. These are exception **unwind states**, not champion skill states or minion ability cooldowns.
+
+**Reusable diagnostic lesson:** Do not infer ownership or a drop-flag reader from shared `.pdata` handler addresses or unexplained metadata words. Validate RVA file backing, match a documented compiler structure's magic and full layout, and *then* examine the actual unwind-map entries and funclets separately. Here the next read-only exact-SHA-gated 010N-12 scanner is **prepared, NOT original-EXE executed** to enumerate the candidate C++ unwind map and image-relative cleanup RVAs, without executing/disassembling cleanup funcs or attaching new actions. The original game's bytewise registered minion record copy, destruction of temporary A–E slots, compiler stack-local write-only flags, authoritative-copy ownership and kind-3 B/C/D selection remain separate blockers.
+
+Source project detailed sanitized record: Creep Chaos `docs/PROBE-010N11-LEGACY-EH-FUNCINFO-FINDINGS.md`. No user raw report, executable binary, private repository deep links, personal paths, or proprietary game disassembly in this public knowledge base.
 
 ## Physical observations versus code-path proof
 
