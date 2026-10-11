@@ -1,7 +1,7 @@
 # Native action timing and effect execution — TFM2 0.6.3
 
 **Status: STATIC EVIDENCE for native action paths; RUNTIME VERIFIED only for original champion Knight W acceptance/effect timing.**  
-**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, **010M-1** static selector contrast, **010M-2** kind-dispatch verification, **010M-3** spatial-callee follow-up, **010N-1** caller topology, **010N-2** vector-handoff classification, **010N-3** upstream caller comparison, **010N-4** post-builder cached-spec refresh, **010N-5** receiver/teardown classification, **010N-6** temporary action-aware destruction, **010N-7** delegated kind release/stack flag evidence, **010N-8** kind-3 destructor-table/flag read negative, **010N-9** native unwind handler metadata, **010N-10** opaque per-function EH prefix contrast, and **010N-11** legacy C++ FuncInfo header match, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
+**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, **010M-1** static selector contrast, **010M-2** kind-dispatch verification, **010M-3** spatial-callee follow-up, **010N-1** caller topology, **010N-2** vector-handoff classification, **010N-3** upstream caller comparison, **010N-4** post-builder cached-spec refresh, **010N-5** receiver/teardown classification, **010N-6** temporary action-aware destruction, **010N-7** delegated kind release/stack flag evidence, **010N-8** kind-3 destructor-table/flag read negative, **010N-9** native unwind handler metadata, **010N-10** opaque per-function EH prefix contrast, **010N-11** legacy C++ FuncInfo header match, and **010N-12** fully enumerated unwind-map cleanup targets, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
 
 **Exact Windows build constraint:** Teamfight Manager 2 **0.6.3**, original game EXE SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; PE timestamp `0x6AC5C567`; SizeOfImage `0x052D6000`. These are **native addresses and offsets, not SDK-stable ABI**. Re-identify instructions, jump tables, ownership and field layout for every other build.
 
@@ -182,6 +182,25 @@ Each candidate unwind-map RVA is **exactly 0x28 bytes after its candidate FuncIn
 **Reusable diagnostic lesson:** Do not infer ownership or a drop-flag reader from shared `.pdata` handler addresses or unexplained metadata words. Validate RVA file backing, match a documented compiler structure's magic and full layout, and *then* examine the actual unwind-map entries and funclets separately. Here the next read-only exact-SHA-gated 010N-12 scanner is **prepared, NOT original-EXE executed** to enumerate the candidate C++ unwind map and image-relative cleanup RVAs, without executing/disassembling cleanup funcs or attaching new actions. The original game's bytewise registered minion record copy, destruction of temporary A–E slots, compiler stack-local write-only flags, authoritative-copy ownership and kind-3 B/C/D selection remain separate blockers.
 
 Source project detailed sanitized record: Creep Chaos `docs/PROBE-010N11-LEGACY-EH-FUNCINFO-FINDINGS.md`. No user raw report, executable binary, private repository deep links, personal paths, or proprietary game disassembly in this public knowledge base.
+
+## Original C++ EH unwind maps and cleanup-target inventory — 010N-12 (2026-10-10)
+
+**STATIC original-game evidence, not lifetime-safe native skill ownership.** On original Teamfight Manager 2 **0.6.3 Win64** (reported EXE SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`, PE timestamp `0x6AC5C567`, SizeOfImage `0x052D6000`), the user ran read-only, exact-SHA/PE-gated 010N-12. The uploaded report was checked at **JSON-level (57/57 local checks)**; no original EXE was independently rescanned by the reviewer, and no in-game run or native action write occurred.
+
+The previously identified legacy Microsoft C++ `FuncInfo` headers (magic `0x19930522`) resolve to **complete eight-byte-per-entry `UnwindMapEntry` arrays**:
+
+| Original native function | `UnwindMap` RVA | Entries / distinct action RVAs |
+| --- | --- | ---: |
+| Minion-processing Parent A `0x014402C0` | `0x04BA2C50` | **103** |
+| Minion-processing Parent B `0x0145A350` | `0x04BA5950` | **66** |
+| Temporary entity-record destructor `0x015464F0` | `0x04BD223C` | **25** |
+| Delegated kind-variant cleanup `0x01546370` | `0x04BD1FE0` | **1** |
+
+**All 195 original unwind entries** have ordered state indices and **`ToState` pointing to a smaller state or `-1`**. Each cleanup-action RVA is **within image bounds and file-backed in `.text`**. All 195 are unique, including across function maps. Every map terminates exactly at a **further address encoded in its FuncInfo header**, strengthening the full-map interpretation: respective map ends are **`0x04BA2F88`, `0x04BA5B60`, `0x04BD2304`, `0x04BD1FE8`**. These state counts represent **exception unwind states**, *not* game/minion skill states or cooldowns.
+
+**Research implication:** The two minion-building parents now have a **finite, directly enumerated set of 169 native exception cleanup targets**, rather than an abstract shared EH handler. Illustrative original RVAs: Parent A cleanup state 4 **`0x0144C5C0`**, Parent B state 56 **`0x01460CA0`**; both lie immediately after their respective normal-function `.pdata` ends. This is **compelling static cleanup-funclet topology**, but the cleanup *bodies were not disassembled*, and **no consumer of the compiler-local byte flags has been proven**. File-backed `Action` pointers do not show that those handlers execute during normal simulation, that source-to-registered action pointer ownership is retained, or that kind-3 minions can use B/C/D actions.
+
+**Next proposed test (prepared, not original-EXE executed):** bounded, SHA-gated 010N-13 inspects the 195 original cleanup funclets for **literal memory displacement references** to already identified compiler-local flags and direct calls to established native entity lifetime helpers. Frame-base provenance, indirect/aliased accesses and bytewise copy/disarm semantics still require separate verification. Reusable method: distinguish `FuncInfo` structure confirmation, unwind-map target enumeration, actual funclet code, and normal-path ownership. The project keeps detailed source and counts under `docs/PROBE-010N12-ORIGINAL-EH-UNWIND-MAPS-FINDINGS.md`. No proprietary raw disassembly, user log or machine path is published.
 
 ## Physical observations versus code-path proof
 
