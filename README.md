@@ -6,7 +6,7 @@ Independent, **version-sensitive** research into Teamfight Manager 2 (TFM2) modd
 
 - [Contributing and evidence rules](CONTRIBUTING.md)
 - [Provenance and source projects](research/source-index.md)
-- [Game/build compatibility](game-versions/compatibility.md)
+- [Game/build compatibility](game-versions/compatibility.md)\n- [0.7.0 beta1 cross-project impact and readiness](game-versions/0.7.0-beta1-impact.md)
 - [Simulation and replay separation](architecture/simulation-and-replay.md)
 - [Multiplayer authority, synchronization, and networking research](architecture/multiplayer-authority-and-networking.md)
 - [Camera and input](architecture/camera-and-input.md)
