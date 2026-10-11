@@ -1,7 +1,7 @@
 # Native action timing and effect execution — TFM2 0.6.3
 
 **Status: STATIC EVIDENCE for native action paths; RUNTIME VERIFIED only for original champion Knight W acceptance/effect timing.**  
-**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, and **010M-1** static selector contrast, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
+**Origin:** Creep Chaos Probes 010F, 010G-3, 010H, 010J, **corrective Probe 010K-4**, offline clone classification **010L-4**, **010M-1** static selector contrast and **010M-2** kind-dispatch verification, studied 2026-10-08 to 2026-10-10. Full traces and standalone verifiers remain in the originating mod repository. This summary does **not** establish executable champion skills on native creeps.
 
 **Exact Windows build constraint:** Teamfight Manager 2 **0.6.3**, original game EXE SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; PE timestamp `0x6AC5C567`; SizeOfImage `0x052D6000`. These are **native addresses and offsets, not SDK-stable ABI**. Re-identify instructions, jump tables, ownership and field layout for every other build.
 
@@ -26,7 +26,24 @@ The game has an original per-entity action representation, native cached refcoun
 - Original **kind-3 state writer** RVA `0x01414180` resolves a genuine kind-3 entity, writes native `entity+0x70=0/1` with associated target/state, and consults **slot A `+0x80`** to prepare a native simulation event. No B/C/D action references were identified in this surveyed native function. That event is **not synonymous with the ready-effect vector**.
 - Original **champion W entry** RVA `0x016F4450` uses **slot C** but requires **kind 15** before its real W state-5 start. The **shared** processor RVA `0x016F6CC0` has both kind-3 **slot-A** handling and the separate champion **slot-C/state-5** W route. All-slot references in that entire mixed-kind function must **not** be mistaken for kind-3 reachability.
 
-**Conclusion and limitation:** No original native B/C/D choice, independent cooldown, or kind-3 champion W progression has been demonstrated in those surveyed branches. This **does not globally disprove** other native action dispatchers or establish that a mod must duplicate champion abilities. A separate **MC-owned deterministic chooser that delegates genuine owned native abilities** is only a **design hypothesis**, not a discovered API. Next static verification: resolve both native **kind-3 and kind-15 effect/update dispatch jump-table entries**, including the currently unmapped **kind-3 post-effect updater**, before claiming branch compatibility. Origin: Creep Chaos `docs/PROBE-010M1-SELECTOR-STATIC-FINDINGS.md`. Keep detailed report and raw disassembly only in the originating project's private investigation.
+**Conclusion and limitation:** No original native B/C/D choice, independent cooldown, or kind-3 champion W progression has been demonstrated in those surveyed branches. This **does not globally disprove** other native action dispatchers or establish that a mod must duplicate champion abilities. A separate **MC-owned deterministic chooser that delegates genuine owned native abilities** is only a **design hypothesis**, not a discovered API. **Follow-up resolved in 010M-2:** both native kind effect/update table entries were extracted, and the previously unmapped kind-3 update destination is RVA `0x016FCE25`; see the next section. This does **not** establish additional minion ability selection. Origin: Creep Chaos `docs/PROBE-010M1-SELECTOR-STATIC-FINDINGS.md`. Keep detailed report and raw disassembly only in the originating project's private investigation.
+
+## Native kind-specific effect and post-effect dispatch — 010M-2 (2026-10-10)
+
+**STATIC EVIDENCE, original TFM2 0.6.3 Win64; user-executed read-only, SHA/PE-gated scan, NOT a gameplay test.** Reported executable SHA-256: `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`; PE timestamp `0x6AC5C567`; SizeOfImage `0x052D6000`. A bounded user report supplied **six original signed relative jump-table entries**, all checked for expected destination against the uploaded JSON, plus **27/27** selected reported instruction anchors. The original executable itself was not independently rescanned in the reviewing environment. Native RVA and table layouts are **not version-stable APIs**.
+
+| Native jump table RVA | Native kind/state | Original destination RVA |
+| --- | --- | --- |
+| `0x03BB3FC4` effect kind table | kind 3 (index 1) | `0x016F7402` — slot-A minion effect path |
+| `0x03BB3FC4` effect kind table | kind 15 (index 13) | `0x016F7BB1` — champion effect/state switch |
+| `0x03BB3FFC` champion effect state table | state 5 (index 2) | `0x016F7F68` — champion slot-C W effect |
+| `0x03BB40BC` post-effect kind table | **kind 3 (index 1)** | **`0x016FCE25` — newly resolved minion update branch** |
+| `0x03BB40BC` post-effect kind table | kind 15 (index 13) | `0x016FD07E` — champion state update |
+| `0x03BB40F4` champion state update table | state 5 (index 5) | `0x016FD3F1` — champion W progress/completion |
+
+**New code-path finding:** The original kind-3 post-effect entry at `0x016FCE25` invokes two native functions in order: **VA `0x141415B40`** (RVA `0x01415B40`, purpose **not classified**) at RVA `0x016FCE48`, followed by already identified genuine kind-3 action-state writer **VA `0x141414180`** (RVA `0x01414180`) at `0x016FCE89`, then jumps to common processing `0x016FD455`. We have **not** established what the earlier callee does or that it chooses champion abilities. This shows why locating the **actual kind dispatch destination and both native callees** is necessary before reasoning about action availability.
+
+**Scope and limitations:** These are original compiled code/control-flow edges, not observed per-tick activity, a live kind-3 W cast, or proof of deterministic authoritative simulation. The existence of slot-C W logic in the **same large native function** does **not** mean the kind-3 effect or update table can reach champion W's state-5 branch. Neither a minion-owned additional action nor cooldown/target/interrupt semantics have been established. Next investigation in the originating Creep Chaos project: **read-only body/provenance of unclassified RVA `0x01415B40`**, before hypothesizing any MC-owned scheduler or native ability reuse. Project report: `docs/PROBE-010M2-KIND-DISPATCH-FINDINGS.md`; no raw disassembly, private paths, logs, or game assets in this public knowledge base.
 
 ## Physical observations versus code-path proof
 
