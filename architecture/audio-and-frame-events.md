@@ -50,3 +50,18 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 4. Prove true death callback/order and multiple-Berserker handling. Despawn is not the same as an observed death.
 
 **Source reports (private project, titles only):** `TFM2-Berserker-Keeps-Yelling/docs/PROBE-003-FINDINGS.md`, `PROBE-004-FINDINGS.md`, `PROBE-005-FINDINGS.md`, and `PROBE-006-FINDINGS.md`, plus `AUDIO-VOICE-PROBE-A-FINDINGS.md`, `PROBE-007-FINDINGS.md`, and `PROBE-008-FINDINGS.md`. The originating repository is currently private; no private deep links, raw logs, or proprietary assets are republished here.
+
+
+## Third-party custom champion audio asset pipeline (static evidence, 2026-10-12)
+
+**Status:** **static evidence only** from an uploaded copy of Workshop package `3774304166`, identified by its bundled metadata as *Silver's League of Legend Reborn* (`test_mod`, package metadata version `0.1.0`). **Game version not established:** the package includes an older minimum `base >=0.4.11` dependency and workshop-note filenames, neither of which proves an exact runtime-tested build. This package was inspected but **not installed, executed, or tested against TFM2 0.6.3**.
+
+A custom champion's declarative effect can specify `{"type":"Sfx","name":"example_cast"}` (or `TargetSfx`). A `sound/sfx/example_cast.sound_info` file provides a `plays` array; each entry has a `clip` asset name, `delay` and `volume`. The package registers sound definitions and individual clips through `mod.override_info` mappings from `asset/base/sound/sfx/...` to `asset/<mod_id>/sound/sfx/...`. External `.wav` and `.mp3` assets exist alongside these declarations. In this snapshot there are 111 `.sound_info` entries, 98 WAV clips, 13 MP3 clips, and 206 sound-path override entries. Counts describe the archive, **not** which entries successfully play.
+
+The `plays` array can declare multiple clips/delays for one event (example patterns include 0 and 0.15 second entries, or repeated clips). This is evidence of an authored scheduling *format*, **not** verification of playback fidelity, looping, cancellation, audio handle ownership, pause behavior, or replay synchronization.
+
+**Relationship to Berserker probes:** earlier Probe 003's inaudible `StableSim::play_sfx` used a file path instead of a bound sound-event name; this third-party asset layout strengthens the **binding-mismatch hypothesis** but does not prove it was the exclusive cause. WinMM Probe 007/008's individually stoppable audio remains separately runtime verified. A native sound definition and an interruptible per-voice audio backend should **not** be assumed equivalent.
+
+**Next tests:** construct mod-owned synthetic test tone with `.sound_info`, asset mappings, and a valid named Sfx invocation; verify audible playback on the exact target build (0.6.3), then test whether native playback exposes per-instance stopping and whether events emitted from presimulation are heard during visible replay. Avoid distributing third-party sound files or copying proprietary assets.
+
+**Provenance/limitations:** user-supplied third-party Workshop archive `3774304166.zip`, reviewed 2026-10-12; no third-party recordings, binary, personal local paths, or raw logs included here. This is independent package inspection, not a claim about the original author's test results.
