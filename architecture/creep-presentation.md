@@ -44,6 +44,11 @@ Original client resource resolver **`0x0230AB20`** (173 instructions) had **11 i
 
 **Next unverified question:** trace only the known paired view register/provenance in the selected original callers (prepared read-only Probe 012C); then, if still inconclusive, perform a bounded observation-only simulation↔view correspondence test. Original gameplay ability ownership/selection, 3+3 waves, jungle and replay authority are separate.
 
+
+### Follow-up static limitation (Probe 012C, 2026-10-11)
+
+For the original fingerprinted 0.6.3 Win64 EXE, a separate read-only report found a table-backed rendering path with 0x1D0-byte rows and a compared table key eight bytes before the view subrecord forwarded to the known resource and animation resolvers. **STATIC evidence only:** the key's semantics are unclassified; ordinary lane-minion use of this path, equality to `StableEntity::id()`, and individual champion artwork assignment remain **unverified**. Do not read a negative offset from arbitrary view pointers: this relative layout is supported only inside the particular caller's verified table-lookup path. An observation-only, caller-qualified runtime correlation is the next gate; no new in-game validation was performed in Probe 012C. The uploader had temporarily used 0.7.0 beta but ran Probe 012C on the original 0.6.3 executable SHA `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`, timestamp `0x6AC5C567`, SizeOfImage `0x052D6000`.
+
 ## Important boundary
 
 This demonstrates **visual resource compatibility and a deterministic per-minion proof-state cooldown**. It does *not* prove native creeps can execute Knight's full built-in champion skill pipeline, target champions under all ability rules, or support generalized **per-slot** hero selection, 3+3 wave expansion, siege/jungle variants, or native skill use. The tested counter `post_cc_visible` remained zero, so custom CC persistence was **not** established by this probe.
