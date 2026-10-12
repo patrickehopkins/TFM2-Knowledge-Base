@@ -1,6 +1,6 @@
 # Gameplay buff observations versus audible playback
 
-**Status:** TFM2 **0.6.3 / stable ABI 9**, runtime evidence through Berserker Probe **008** (2026-10-11). **Verified:** custom WAV playback during visible HUD time, standalone and in-process independent WinMM voices, manual one-voice-at-a-time interruption with ordinary game audio continuing. **Unresolved:** precise native replay cursor, real Rage/death event timing, pause/seek semantics, game mute/gain mapping, active-voice match teardown and other game versions.
+**Status:** TFM2 **0.6.3 / stable ABI 9**, runtime evidence through Berserker Probe **008** (2026-10-11). **Verified:** custom WAV playback during visible HUD time, standalone and in-process independent WinMM voices, manual one-voice-at-a-time interruption with ordinary game audio continuing. **Unresolved:** precise native replay cursor, real Rage/death event timing, pause/seek semantics, game mute/gain mapping, DLL unload/forced process shutdown and other game versions. **Eight-second watchdog and active-voice return-to-title cleanup are now verified** in Probe 008's lifecycle follow-up.
 
 ## Simulation state is not the playback clock
 
@@ -24,7 +24,14 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 **Manual interruption + native sound coexistence verified, 2026-10-11 (Berserker Probe 008, v0.0.8):** The user heard **two successful F10 start-both → stop-low-only → stop-high sequences**, and explicitly reported that TFM2's normal audio continued. Separate stop-request callbacks were logged at **2166/3891 ms** in the first sequence and **1756/3386 ms** in the second. No audio-error marker was reported. This is a **real in-process, game-audio-coexisting demonstration** with generated tones—not a claim of calibrated speaker latency, per-champion voice ownership, or full Rage integration.
 
-**Still open:** game volume/mute linkage (independent WinMM is not necessarily governed by TFM2 settings), eight-second watchdog, leaving the match while audio is playing, pause/speed/seek, native Rage/death transitions, final clip streaming/rights, and XAudio2. The transition to match results in Probe 008 happened **after** both voices had been stopped; scene exit teardown during active playback remains untested.
+**Further lifecycle runtime verified (2026-10-11; Berserker Probe 008, v0.0.8):** The owner confirmed two additional sound behaviors while watching TFM2 0.6.3, with matching diagnostic evidence.
+
+- **Watchdog:** an F10 start left both WinMM voices active; without another F10, the client logged `VOICE_INPROCESS_CLEANUP reason=watchdog_8_seconds low_active=true high_active=true`. The owner heard both notes stop. The log has no calibrated speaker-out latency and no exact watchdog elapsed-ms value.
+- **Title-screen exit:** in a separate run, both voices were still active when the stable-client callback logged `VOICE_INPROCESS_CLEANUP reason=left_ingame_scene low_active=true high_active=true`; immediately afterward the UI logger recorded an `InGame → Title` transition. The owner confirmed the sounds stopped while **TFM2 stayed running**.
+- **Useful negative control:** an earlier exit attempt quit TFM2 to Windows while sound was active. The process stopping sound is **not evidence** of clean mod/DLL unload. That trial did not contain the positive client cleanup marker and remains inconclusive.
+- **Concurrency boundary:** diagnostics from the watched simulation still continued after the title transition. A running simulation worker does **not** imply an active client match presentation. Audio teardown must be tied to the relevant client scene or playback epoch.
+
+**Still open:** game volume/mute linkage (independent WinMM need not follow TFM2's settings), forced DLL unload/crash safety, seek/pause/speed, multiple champion voices, native Rage/death events, clip streaming and rights, measured speaker-stop latency, and XAudio2. The prior Probe 008 manual-stop run transitioned to results only **after** the sounds ended; the *later* separate return-to-title test is what establishes active-voice cleanup.
 
 **Source provenance:** Originating private Berserker Keeps Yelling reports `docs/AUDIO-VOICE-PROBE-A-FINDINGS.md`, `docs/PROBE-007-FINDINGS.md`, and `docs/PROBE-008-FINDINGS.md`. No raw logs or private source links are republished.
 
@@ -39,7 +46,7 @@ Probe 002 found that watched simulation reached **36,471** (~10:08 at 60 tps) wh
 
 1. Separate presimulation tick, rendered replay cursor, monotonic wall time, scene epoch, and champion identity. The HUD's integer seconds are insufficient for a 179-tick effect's exact entry/exit.
 2. Use native presentation-state investigation (exact build fingerprint and fail-closed reads) instead of repeating an unchanged UI traversal.
-3. Probe 008 confirmed **two early/manual in-process WinMM stop sequences while normal game audio continued**. Focus next on replay-timed Rage/death triggers, watchdog and scene-exit cleanup, not repeated basic two-tone feasibility. XAudio2 remains a documented, untested alternative.
+3. Probe 008 confirmed **two early/manual in-process WinMM stop sequences while normal game audio continued**; subsequent owner-run follow-ups confirmed **both-voice watchdog timeout and return-to-title cleanup**. Focus next on exact playback Rage/death triggers, pause/seek, and forced-unload robustness—not repeating basic two-tone feasibility. XAudio2 remains a documented, untested alternative.
 4. Prove true death callback/order and multiple-Berserker handling. Despawn is not the same as an observed death.
 
 **Source reports (private project, titles only):** `TFM2-Berserker-Keeps-Yelling/docs/PROBE-003-FINDINGS.md`, `PROBE-004-FINDINGS.md`, `PROBE-005-FINDINGS.md`, and `PROBE-006-FINDINGS.md`, plus `AUDIO-VOICE-PROBE-A-FINDINGS.md`, `PROBE-007-FINDINGS.md`, and `PROBE-008-FINDINGS.md`. The originating repository is currently private; no private deep links, raw logs, or proprietary assets are republished here.
