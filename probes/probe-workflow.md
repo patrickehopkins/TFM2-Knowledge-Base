@@ -13,6 +13,20 @@ A good TFM2 probe answers one question with minimal game-changing behavior, and 
 7. Preserve concise sanitized raw evidence in the owning repo. Record observed log counts, drops, scene epochs, event correlation, and limitations.
 8. Publish a reusable conclusion here, clearly distinguishing verification, static deductions and hypotheses.
 
+## Bound physical observation by the evidence horizon
+
+**Reusable workflow rule (2026-10-13):** do not ask a tester to watch an entire match when the hypothesis only needs an early bounded event sequence. State the required visible evidence, a concrete observation cap, and the stopping action before the run.
+
+For renderer/presentation probes in particular:
+
+- distinguish **simulation coverage** from **visible renderer coverage**; a far-ahead simulation tick is not proof the corresponding visible wave/event was rendered;
+- prefer an explicit condition such as "two complete visible spawn cohorts" over "watch the match";
+- give a short wall-clock cap when possible and make the resulting partial log a valid **INCONCLUSIVE** outcome rather than silently extending the test;
+- only require a full match when the question genuinely concerns late-game, whole-match, teardown, or end-of-match lifecycle behavior;
+- if a completion marker is log-only, tell the tester they do not need to tail it live.
+
+Creep Chaos Probe 014C exposed the cost of violating this rule: a long fixed-1× renderer run still did not establish multiple fresh renderer lineages even though the independent simulation observer had advanced through many conceptual waves. The follow-up changed the probe design instead of demanding another full 1× match.
+
 ## Good examples
 
 - **Creep Chaos Probe 007:** wrong animation-key resolver RVA; expected failure prevented mutation. The failed preflight did not test animation semantics.
