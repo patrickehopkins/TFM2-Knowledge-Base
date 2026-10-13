@@ -304,3 +304,13 @@ Despite that much longer 1× renderer observation, the aggregate presentation mo
 **Reusable conclusion:** do **not** assume that each later simulated minion wave must appear as a fresh set of renderer pointer lineages. Presentation objects may be pooled or otherwise reused across simulated lifetimes; that interpretation is a **hypothesis**, not yet proven. A safer next test is to observe **repeat entries into independently known spawn anchors** without requiring a new pointer or direct renderer↔StableEntity-ID join. Raw pointers remain unsuitable as deterministic identity or selection seeds.
 
 This correction does not prove pooled slot semantics, renderer wave numbers, authoritative slot ownership, per-slot artwork, champion abilities, expanded waves, jungle, multiplayer or 0.7.0 compatibility. Origin: Creep Chaos Probes 014C/014D; raw logs remain private.
+
+### Probe 014D: raw spawn-anchor re-entry can be a handoff, not a new wave
+
+**RUNTIME VERIFIED NEGATIVE / MODEL REJECTION (2026-10-13):** Creep Chaos **v0.0.30**, original **TFM2 0.6.3 Win64**, SDK ABI **9**, tested raw-address re-entry into the six known lane/team spawn anchors while retaining the prior logical-lineage collector. The run again passed the exact **2,048 / 2,048 PRIMARY** bootstrap and then accepted **10,726** extended PRIMARY callbacks before one later invocation failed exact full-fallback caller classification.
+
+The address-episode observer recorded four complete six-side phases. The first ranged phase completed at renderer callback ordinals **824–838**. A nominal "second ranged" phase completed almost immediately at **842–854**. That second phase occurred during the known renderer address-generation handoff burst, while the logical collector ultimately still reported only **18 logical lineages + 18 continuations**. It is therefore **not valid evidence of a second minion wave**.
+
+**Reusable conclusion:** even a pointer used only as an ephemeral spawn-anchor debounce key can manufacture false wave occurrences when presentation addresses hand off while a unit is still close to spawn. Count candidate spawn generations only **after normalizing observations through logical spatial continuity**. A recycled address should not start a new generation merely because it re-enters an anchor; require independent evidence that its prior logical lineage had first departed that same anchor by a substantial margin, and keep the result diagnostic until repeated over later visible waves.
+
+No StableEntity-ID join, renderer wave number, authoritative per-slot artwork key, champion ability ownership, expanded wave, jungle, multiplayer or 0.7.0 behavior follows. Origin: Creep Chaos Probe 014D; aggregate results only, raw log private.
