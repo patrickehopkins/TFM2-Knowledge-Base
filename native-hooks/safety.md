@@ -12,6 +12,12 @@ Harbinger's historical v0.5.8 loop probe patched a 16-byte region at RVA `0x0181
 
 In Creep Chaos Probe 007 (0.6.3), the animation resolver RVA was mistyped `0x02312A30` instead of `0x02313A30` (a 0x1000 discrepancy). The signature check rejected it; both dependent presentation mutations remained off, and vanilla sprites remained visible. **This is a successful fail-closed guard, not proof of the intended animation-key hypothesis.** Probe 008 then corrected the address and physically validated the paired path.
 
+## Synthetic x86-64 disassembly negative-control lesson (2026-10-13)
+
+**CI-verified synthetic fixture, not an original game hook:** In Berserker's offline Probe 011A–P, changing just the leading REX prefix `0x48` of a synthetic 64-bit `LEA` did **not** remove all decodable RIP-relative references to its string target. The remaining instruction bytes can form another valid instruction starting at the next byte (32-bit destination register). The first synthetic negative therefore failed, and the test was corrected to mutate the actual `LEA` opcode. The corrected synthetic positive and negative tests passed in GitHub CI.
+
+**Reusable safety implication:** a single-byte modification or an assembler disassembly at one chosen start address does not prove that an x86-64 instruction is absent, nor that entering the changed span through another boundary is harmless. Validate exact instruction boundaries, overlapping decodings and inbound branch targets before any native detour or patch. The synthetic negative proves an *analysis pitfall*, **not** safe or unsafe game hooking.
+
 ## Minimal safety checklist
 
 1. Verify full executable build identity and expected target instruction bytes.
