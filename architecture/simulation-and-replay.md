@@ -30,6 +30,10 @@ Creep Chaos Probe 002 physically revalidated watched ClientMatchView Candidate A
 
 This does **not** establish that 3× caused the later stack mismatch. It establishes a more general testing rule: **visible playback speed is an experimental condition for renderer/presentation probes.** Increasing replay speed can change how much game time advances between rendered frames/callbacks and therefore can change callback density, per-callback movement and how much visible playback a bounded callback window covers. Conversely, simulation ticks and already-observed simulation-side spawn semantics are not reinterpreted merely because the user changes replay speed.
 
+**FIXED-1× FOLLOW-UP (runtime verified, same Creep Chaos v0.0.29 / original 0.6.3 / ABI9, 2026-10-13):** the controlled 1× run again passed **2,048 / 2,048** exact-primary full-stack callbacks at unanimous raw depth 2, then verified **15,160** further callbacks before one learned-depth one-frame miss caused the intended fail-closed stop. Therefore the late mismatch is **not exclusive to 3× playback**. It remains unknown whether playback speed changes its frequency.
+
+**Reusable native-observer lesson:** a stack-frame depth learned from an initial unanimous window should be treated as a **performance shortcut, not permanent caller identity**. If a later one-frame lookup misses, a safe observer can fully unwind that same callback and independently require the exact original caller before touching caller-qualified native fields. A failed full fallback must still stop observation. Do not relax exact return-address checks merely to preserve a long capture.
+
 For renderer-sensitive experiments, record playback speed, use a fixed-speed baseline (preferably 1×), and do not change speed, seek, pause or leave for match results before the required visible-coverage condition is met. Treat exact callback-ordinal gaps and per-callback geometric thresholds as playback-regime-dependent calibration data until verified across speeds. A later accelerated-speed run is a compatibility/stress test, not a substitute for a controlled baseline.
 
 ## Practical consequences
