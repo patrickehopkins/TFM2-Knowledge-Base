@@ -14,3 +14,5 @@ This is a research inventory, not an exhaustive or official API definition. For 
 Flame Probe 0.3.1 was physically run on 0.6.3 with host ABI 9 / installed SDK ABI 9 and recognized UI selector candidates. It recorded positive `tick_per_second=60` and `visible_distance=130000`. This is a **specific test outcome**, not a promise that all SDK behaviors are stable across releases.
 
 For native instrumentation: verify each executable's hash/PE identity and prologue; never assume that stable SDK ABI implies stable native layout.
+
+**Important v0.6.3 native chat limitation (physical Flame 0.3.2 probe, 2026-10-13):** stable SDK `ui_spawn_source` / `ui_spawn_template` / `ui_set_text` created a readable probe-owned child under `ingame.chat_list`, but it was absent by the next ordinary UI poll, under 258 ms after creation. Generic UI spawning is not a persistent native chat-dispatch API. The cause of removal and onscreen painting remain unverified. See [chat presentation finding](../architecture/chat-presentation.md).
