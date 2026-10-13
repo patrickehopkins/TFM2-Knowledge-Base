@@ -123,3 +123,22 @@ In the Berserker project, `scripts/run-probe009cde-batch.ps1` now regenerates 00
 **Recommended pattern for other mods:** batch safe read-only stages that consume one fingerprinted executable, run synthetic tests before scanning real game data, reject hash/schema mismatch, bound output, and deliver **one report** to the tester. Cache intermediate JSON locally but regenerate missing ignored inputs so fresh clones work. Preserve independent experiment outcomes and explicit overflow/negative findings. Only split into separate user-visible probes when a *new native pointer/hook*, physical audio confirmation, or gameplay-semantic decision genuinely requires interpreting the previous result first.
 
 **Not recommended:** making a longer batch simply by chaining more generic keyword rankings, turning an unwind-function boundary into a claimed gameplay owner, or automatically patching a native address inferred only from a string xref. Separate audio asset-registration discovery from per-voice interruption and from presentation-time event provenance.
+
+
+### Stitch renderer segments before whole-trajectory identity tests — Probe 014B (2026-10-13)
+
+**RUNTIME-OBSERVED INPUT + PRIVATE OFFLINE ANALYZER CORRECTION.** Creep Chaos v0.0.28 on original TFM2 **0.6.3 / SDK ABI9** physically produced a complete 2,048-primary-callback presentation sample. The first prepared whole-trajectory matcher grouped raw native view-address tracks by role/lane/side and returned **`REJECT_INSUFFICIENT_MOVEMENT` for all 12 groups**. That outcome was initially structurally valid but semantically unhelpful: the same logical rendered lane path can be split across multiple native view addresses, including very short segments, so interpolating *every raw address segment* before lineage reconstruction lets one short segment reject an otherwise useful group.
+
+A second aggregate-only analysis therefore applies this safer order:
+
+1. Treat every native view address as an **ephemeral segment**, never an entity ID.
+2. Before calling a first-seen address a new spawn, test for a **unique same-role spatial continuation** from an earlier completed segment. Require a small predecessor gap, a much larger runner-up margin and consistency with independently known lane/endpoint-side when available; ambiguity must reject.
+3. Only if no unique continuation exists may a new logical lineage begin, and it must start near a uniquely classified original spawn endpoint.
+4. Build spawn cohorts from **new logical lineages**, not from raw pointer arrivals.
+5. Only then compare aggregate cohort role/cardinality/order to the SDK spawn schedule. Do not equate renderer callback ordinal with simulation tick and do not serialize native-token↔SDK-ID pairs.
+
+In the originating run, **36 address segments** formed **18 initial lineage candidates + 18 unique continuation candidates**. Best continuation gaps were roughly 0.8–2.4k native units and the minimum second-best margin was roughly 20.8k, with all independently classifiable continuations agreeing on lane/side. This is enough to **reject raw pointer equality as a persistent identity design**, but it is not an authoritative stable entity-ID mapping.
+
+The first 18 logical starts also formed complete **6 melee → 6 melee → 6 ranged** cohorts across all three lanes and both sides, matching the *shape/order* of the independently observed first native wave spawn phases. Treat any slot interpretation as **HYPOTHESIS** until repeated over later visible waves and falsified against pointer handoffs, replay boundaries and ambiguous same-role continuations.
+
+**Reusable analyzer lesson:** when client presentation objects can be reconstructed or readdressed, first reconstruct/reject logical lineage at the presentation layer; otherwise a whole-track correlator can manufacture false “insufficient data” negatives. Preserve the failed first analyzer as a useful negative result rather than deleting it. No gameplay authority, native ability ownership or 0.7.0 compatibility follows.
