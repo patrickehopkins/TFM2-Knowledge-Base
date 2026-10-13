@@ -8,6 +8,7 @@ Independent, **version-sensitive** research into Teamfight Manager 2 (TFM2) modd
 - [Provenance and source projects](research/source-index.md)
 - [Game/build compatibility](game-versions/compatibility.md)
 - [Simulation and replay separation](architecture/simulation-and-replay.md)
+- [Native chat UI ownership and refresh behavior](architecture/chat-presentation.md)
 - [Multiplayer authority, synchronization, and networking research](architecture/multiplayer-authority-and-networking.md)
 - [Camera and input](architecture/camera-and-input.md)
 - [Native creep and champion presentation](architecture/creep-presentation.md)
