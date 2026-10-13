@@ -97,6 +97,21 @@ The prepared runtime collector is instrumented only on the **previously validate
 **Reusable methodology:** When presimulation and on-screen playback clocks are fundamentally different, whole-trajectory pattern comparison can be tested as a falsifiable *candidate* identity hypothesis without assuming synchronized timestamps. However, require same-role collision/ambiguity controls, scene/replay epoch separation and independent verification of actual data quality before assigning identities. Do not allow a synthetic pass to substitute for physical observation. Detailed code/test runbooks remain in the originating Creep Chaos project; raw game logs and original binary instruction contexts are not published.
 
 
+
+### Physical renderer segments can outlive one client-view pointer — Probe 014B result (2026-10-13)
+
+**USER-EXECUTED PHYSICAL RUNTIME + PRIVATE OFFLINE REANALYSIS.** Creep Chaos v**0.0.28** ran on original **TFM2 0.6.3 Win64**, stable SDK ABI **9**. The watched sample completed **2,048 / 2,048 exact primary-renderer callbacks** and logged **54 SDK simulation tracks / 2,480 SDK positions** plus **36 anonymous renderer-address segments / 1,010 renderer positions**. The raw game log remains private and uncommitted; no raw native addresses were serialized.
+
+The first whole-track matcher reported **12/12 groups as insufficient movement**. That negative remains useful: a client-view address did not represent one complete logical minion trajectory, so treating each address as a persistent entity was the wrong abstraction. A corrected aggregate reanalysis grouped address arrivals before resolving continuity. It found **18 initial renderer-local lineage candidates + 18 one-to-one continuation segments**. Best continuation gaps were about **799–2,400 native units**; minimum forward runner-up margin was about **20,775**, and minimum reciprocal runner-up margin about **19,177**. All **12** continuations whose lane/side could be independently classified agreed with their predecessor; the other six inherited lane/side only after unique renderer-local continuity.
+
+The first 18 logical starts appeared as three complete all-lane/all-side cohorts in order: **6 melee → 6 melee → 6 ranged**. Independently, the SDK-side first-wave spawn metadata had the same role/cardinality order: melee slot-candidate 0 → melee slot-candidate 1 → ranged slot-candidate 0. This is a **conceptual schedule candidate only**. No shared simulation/replay clock, renderer wave number, StableEntity-ID join, native object lifetime, authoritative slot assignment, per-minion artwork authority or champion ability ownership was established.
+
+**Reusable negative:** raw client-view pointer equality should not be used as persistent gameplay or presentation identity for these original lane-minion views. The physical sample shows renderer-local logical continuity across address changes.
+
+**Reusable methodology correction:** resolve simultaneous address handoffs against an **immutable predecessor cohort**, not by mutating predecessor state after each accepted successor. Require one-to-one assignment, forward and reciprocal second-best margins, and independent role/lane/side consistency where available. The first sequential post-processor was order-dependent; the corrected cohort-based analysis preserved the physical 18+18 result. Preserve both the original analyzer failure and the tooling correction as evidence.
+
+A follow-up Creep Chaos v0.0.29 test is being prepared to check the conceptual cohort schedule over multiple visible waves with no entity-ID join or gameplay mutation. Until that physical test succeeds, the first-wave cohort→slot interpretation remains a hypothesis.
+
 ### Windows Rust native-probe prerequisite: Cargo is not enough
 
 **USER-OBSERVED BUILD-ENVIRONMENT NEGATIVE / SOURCE FIX (2026-10-12).** On a fresh Windows development machine, a TFM2 Rust mod targeting `x86_64-pc-windows-msvc` successfully compiled its Rust crates after Rustup installation but failed at the final native link step with **`link.exe not found`**. This is a host-toolchain dependency, not a game/probe-runtime failure and not a performance result.
