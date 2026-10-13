@@ -157,3 +157,10 @@ In the originating run, **36 address segments** formed **18 initial lineage cand
 The first 18 logical starts also formed complete **6 melee → 6 melee → 6 ranged** cohorts across all three lanes and both sides, matching the *shape/order* of the independently observed first native wave spawn phases. Treat any slot interpretation as **HYPOTHESIS** until repeated over later visible waves and falsified against pointer handoffs, replay boundaries and ambiguous same-role continuations.
 
 **Reusable analyzer lesson:** when client presentation objects can be reconstructed or readdressed, first reconstruct/reject logical lineage at the presentation layer; otherwise a whole-track correlator can manufacture false “insufficient data” negatives. Preserve the failed first analyzer as a useful negative result rather than deleting it. No gameplay authority, native ability ownership or 0.7.0 compatibility follows.
+
+
+## Batch a full playback-condition matrix in one physical test (2026-10-13)
+
+**Runtime-negative insight from Berserker 013, TFM2 0.6.3 ABI 9:** a HUD-whole-second audio preview succeeded in starting/stopping test voices but missed synchronization under accelerated playback and disabled itself on Escape/pause. This was a *single match* containing multiple simultaneously available test conditions. For a follow-up, safely batch one DLL install and use a matrix of normal/accelerated/recovered speed, animation-start versus buff-state/end timing, pause/resume, stable pitch across respawns, return-to-title cleanup and optional multi-unit/death; collect one log and concise observations. Dependently modifying a native hook is **not** part of that automatic batch.
+
+**Source-only 014 correction:** ~40 ms client HUD polling, bounded interpolation, three early-start phase candidates, stable diagnostic pitch and pause suspend/auto-resume were synthetically tested in CI. A synthetic run is not a Windows or physical game pass, and the phase shift is a calibration hypothesis rather than a confirmed cast event. Detailed runbook belongs in the originating mod.
