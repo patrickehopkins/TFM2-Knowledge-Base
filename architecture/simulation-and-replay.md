@@ -24,6 +24,14 @@ This is an improvement from raw byte matching, but **still not a validated playb
 
 Creep Chaos Probe 002 physically revalidated watched ClientMatchView Candidate A on its exact 0.6.3 build, but explicitly does **not** treat it as the authoritative simulation mutation surface. The stable `StableMatchHook` handles deterministic game-rule mutations; a watched-client/native hook is for observation or presentation. The engine can maintain more than one simulation context.
 
+## Playback speed is a renderer-sampling condition, not a simulation clock
+
+**RUNTIME VERIFIED METHODOLOGY CORRECTION (Creep Chaos v0.0.29, original TFM2 0.6.3, SDK ABI9, 2026-10-13):** a user-executed watched match was viewed at a reported constant **3× playback speed** while a probe independently observed the watched simulation stream and exact native primary-renderer callbacks. The first **2,048 / 2,048** watched renderer callbacks still shared the same exact primary return path and one unanimous raw stack depth. A bounded one-frame extension then verified **5,584** more exact-primary callbacks before one mismatch triggered its fail-closed stop. The same run's renderer-local cohort summary still contained only the first complete `melee → melee → ranged` visible cohort candidate, while the independent SDK conceptual spawn schedule had already recorded complete phases through multiple later wave candidates. No shared clock was inferred.
+
+This does **not** establish that 3× caused the later stack mismatch. It establishes a more general testing rule: **visible playback speed is an experimental condition for renderer/presentation probes.** Increasing replay speed can change how much game time advances between rendered frames/callbacks and therefore can change callback density, per-callback movement and how much visible playback a bounded callback window covers. Conversely, simulation ticks and already-observed simulation-side spawn semantics are not reinterpreted merely because the user changes replay speed.
+
+For renderer-sensitive experiments, record playback speed, use a fixed-speed baseline (preferably 1×), and do not change speed, seek, pause or leave for match results before the required visible-coverage condition is met. Treat exact callback-ordinal gaps and per-callback geometric thresholds as playback-regime-dependent calibration data until verified across speeds. A later accelerated-speed run is a compatibility/stress test, not a substitute for a controlled baseline.
+
 ## Practical consequences
 
 - Keep simulation tick, presentation clock, wall clock, scene epoch, and instance identity as **separate fields**.
