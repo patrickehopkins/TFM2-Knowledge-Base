@@ -113,3 +113,13 @@ For MSVC-targeted TFM2 Rust mods, install **both** Rust/Cargo and Visual Studio 
 
 In the Berserker project, `scripts/run-probe009cde-batch.ps1` now regenerates 009A and 009B automatically before 009C–009E when no explicit `-Prior` is supplied. **Owner verification (2026-10-12):** after the runner regenerated the missing ignored 009A/009B reports, the owner uploaded a completed exact-SHA original-EXE **009CDE** report using Capstone **5.0.6**, proving the previously blocked multi-stage process reached its final JSON output in the new Windows workspace. This verifies the **fresh-clone workflow completion**, not a native replay-clock discovery. Subsequent 009FGH tooling preserves the same one-command automatic prerequisite regeneration pattern, but is **not yet owner-run**. This is general probe engineering guidance, not a new observation about TFM2's replay-clock implementation.
 
+
+## Offline batch synthetic validation (reusable workflow, 2026-10-13)
+
+**CI-only validation:** Berserker Keeps Yelling added a GitHub Actions check for its Python static native-research scripts. A fresh Linux runner installed pinned **Capstone 5.0.6**, compiled both scripts' syntax, and ran synthetic *positive and tampered negative* fixtures; the run **completed successfully**. **No TFM2 game executable or DLL was present in CI**, and CI does not establish correct 0.6.3 behavior.
+
+**Owner-run original-EXE result:** the preceding 009F–009H offline pipeline independently reported 37/39 candidate string references reachable in a bounded approximate native entry CFG and 45 direct CALL-shaped caller sites validated by disassembly. Those are **static evidence only**, not live replay-clock function identities.
+
+**Recommended pattern for other mods:** batch safe read-only stages that consume one fingerprinted executable, run synthetic tests before scanning real game data, reject hash/schema mismatch, bound output, and deliver **one report** to the tester. Cache intermediate JSON locally but regenerate missing ignored inputs so fresh clones work. Preserve independent experiment outcomes and explicit overflow/negative findings. Only split into separate user-visible probes when a *new native pointer/hook*, physical audio confirmation, or gameplay-semantic decision genuinely requires interpreting the previous result first.
+
+**Not recommended:** making a longer batch simply by chaining more generic keyword rankings, turning an unwind-function boundary into a claimed gameplay owner, or automatically patching a native address inferred only from a string xref. Separate audio asset-registration discovery from per-voice interruption and from presentation-time event provenance.
