@@ -294,3 +294,13 @@ Separately, the SDK observer reports the native first-wave spawn phases as six m
 **Analyzer negative preserved:** the first whole-track trajectory matcher returned `REJECT_INSUFFICIENT_MOVEMENT` for every role/lane/side group because short address segments were mixed with longer segments and the group-wide interpolation failed fast. That is an analyzer-design limitation, **not evidence that trajectory correlation itself failed**. Stitch or reject address segments first, then reason about whole logical trajectories.
 
 No beta **0.7.0**, per-slot art, minion champion ability execution, expanded waves, jungle or multiplayer behavior is established by Probe 014B. Origin: Creep Chaos Probe 014B; detailed logs and token/ID pairings remain private.
+
+### Probe 014C follow-up: later waves did not create fresh renderer lineages
+
+**RUNTIME VERIFIED NEGATIVE / MODEL CORRECTION (2026-10-13):** Creep Chaos **v0.0.29**, original **TFM2 0.6.3 Win64**, SDK ABI **9**, was physically observed at both reported constant **3×** and fixed **1×** playback. Both runs passed the initial **2,048 / 2,048 exact PRIMARY** caller gate. The 1× run then accepted **15,160** more exact-primary callbacks before a learned raw-stack-depth shortcut missed and stopped fail-closed.
+
+Despite that much longer 1× renderer observation, the aggregate presentation model still contained only **18 logical lineages + 18 address continuations**, with no reuse/ambiguity/noninjective failures, while the independent SDK conceptual schedule had complete phases through wave candidate **7** by the probe summary. Only the first renderer candidate sequence `melee slot0 → melee slot1 → ranged slot0` was emitted.
+
+**Reusable conclusion:** do **not** assume that each later simulated minion wave must appear as a fresh set of renderer pointer lineages. Presentation objects may be pooled or otherwise reused across simulated lifetimes; that interpretation is a **hypothesis**, not yet proven. A safer next test is to observe **repeat entries into independently known spawn anchors** without requiring a new pointer or direct renderer↔StableEntity-ID join. Raw pointers remain unsuitable as deterministic identity or selection seeds.
+
+This correction does not prove pooled slot semantics, renderer wave numbers, authoritative slot ownership, per-slot artwork, champion abilities, expanded waves, jungle, multiplayer or 0.7.0 compatibility. Origin: Creep Chaos Probes 014C/014D; raw logs remain private.
