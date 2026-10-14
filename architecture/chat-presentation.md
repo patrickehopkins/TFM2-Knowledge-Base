@@ -1,5 +1,22 @@
 # Native chat UI ownership and refresh behavior
 
+## 0.6.4: stable-SDK owned native chat-template smoke
+
+**Evidence level: physical Windows runtime, 2026-10-14; text and icon API actions verified, pixel rendering not retested.** Flame Simulator Probe **0.3.6**, original TFM2 **0.6.4** EXE SHA-256 `a1d05045405a12e2bed182daeafcad8c8a40cf29ab68ba6ea5bfd30257439582`, stable SDK and host ABI **10**, x64 MSVC DLL. Local installed SDK-tree SHA-256 `c677de3170daed681c06ab2a2705fdb3b5c15628e29d0dcab12de6be54be42bb`.
+
+The SDK-only observation probe loaded on the 0.6.4 game and automatically armed in a watched match. `ingame.chat_list` was still present and visible. Two mod-owned **siblings of that native chat list** under `ingame` were successfully created; the native chat template and synthetic label were readable and visibly flagged by the SDK. Native `chat.icon_slot.icon` existed, and `ui_set_champion_icon` for `fighter` returned success. Two consecutive `ui_set_text` writes with the game's native speaker-markup shape (`<#5873ffff>Flame Probe:<> ...` and `<#ffa64dff>Flame Probe:<> ...`) were accepted and read back after about **5.05** and **10.08 diagnostic wall-clock seconds**.
+
+In **61** half-second polls and **14** logged snapshots, both siblings remained present while the native chat list varied among **0, 1, 2** children. At **30.23 seconds** both were intentionally removed; capture automatically ended with all **2,437 unique sequenced IDs (0–2436)** accounted for and zero reported dropped events. The physical watched-match run therefore supports **stable SDK10 loading, independent UI ownership, bounded text editing and icon setter API success** in this exact 0.6.4 build.
+
+**Important limits:** no fresh 0.6.4 screenshot was supplied; `ui_visible=true`, text readback and successful portrait call **do not independently prove** the label, its colors or the portrait actually painted onscreen on 0.6.4. The custom row's geometry remained the old fixed overlay position and it did **not** join the native scrolling chat history. No native chat event/dispatch, authoritative replay timestamp, seek/pause behavior, or real speaker attribution was validated. One initial `12:34 → 00:00` UI clock change is a scene-entry reset, not proof of replay rewind. The capture's zero-drop counters describe bounded recorded streams, not exhaustive simulation coverage.
+
+**Cross-version interpretation:** the 0.6.3 physical screenshot already verified colored text and a champion portrait, while the new 0.6.4 run independently verifies API calls and UI lifetime. Keep these evidence classes distinct. No 0.6.3 native offsets are relevant to Flame's stable-only probe.
+
+**Origin:** Flame Simulator `docs/CHAT-0.3.6-FINDINGS.md` and `verification/0.3.6.json` on migration branch `probe/0.6.4-compat-0.3.6`; raw logs, screenshots and local filesystem paths remain in the originating project/user environment.
+
+---
+
+
 ## 0.6.3: writing colored chat text and champion portraits
 
 **Status: runtime verified for text updates, orange speaker markup and portrait painting; 2026-10-13.** Source: Flame Simulator **Probe 0.3.4**, physically run against the original TFM2 **v0.6.3** executable SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`, stable SDK/host **ABI 9**, Windows build. Owning project documentation: `docs/CHAT-0.3.4-FINDINGS.md` and `verification/0.3.4.json`.
