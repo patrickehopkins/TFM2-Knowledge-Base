@@ -314,3 +314,19 @@ The address-episode observer recorded four complete six-side phases. The first r
 **Reusable conclusion:** even a pointer used only as an ephemeral spawn-anchor debounce key can manufacture false wave occurrences when presentation addresses hand off while a unit is still close to spawn. Count candidate spawn generations only **after normalizing observations through logical spatial continuity**. A recycled address should not start a new generation merely because it re-enters an anchor; require independent evidence that its prior logical lineage had first departed that same anchor by a substantial margin, and keep the result diagnostic until repeated over later visible waves.
 
 No StableEntity-ID join, renderer wave number, authoritative per-slot artwork key, champion ability ownership, expanded wave, jungle, multiplayer or 0.7.0 behavior follows. Origin: Creep Chaos Probe 014D; aggregate results only, raw log private.
+
+### Probe 014E: logical spawn generations repeat the 2+1 presentation schedule
+
+**RUNTIME VERIFIED POSITIVE, PRESENTATION-ONLY (2026-10-13):** Creep Chaos **v0.0.31**, original **TFM2 0.6.3 Win64**, SDK ABI **9**, replaced the rejected raw-address recurrence model with logical renderer lineages and per-callback exact-caller qualification.
+
+The watched renderer bootstrap again completed **2,048 / 2,048 exact PRIMARY** callbacks at raw depth 2 with zero depth conflicts. The bounded extension then reached its full **24,576 eligible-callback limit**: **22,264** later callbacks were independently accepted as PRIMARY, while **264** were rejected and skipped without a caller-qualified native-field read (**42 shared, 222 unknown/unwound, zero secondary or ambiguous**). This physically validates per-callback caller gating: one non-PRIMARY resolver invocation need not terminate a longer observer when every callback is independently qualified and rejected callbacks perform no protected field read.
+
+After normalizing the known address handoff through spatial lineage continuity, the renderer emitted six complete lane/side phases in this order:
+
+`wave0 melee0 -> melee1 -> ranged0 -> wave1 melee0 -> melee1 -> ranged0`.
+
+The first-wave phase ordinals were **0–5**, **264–275**, and **866–881**. The second logical generation did not appear until **17,447–17,456**, **18,394–18,421**, and **19,637–19,661**. Final aggregate state was **36 logical lineages + 18 continuations**, with **zero** address-reuse rejects, ambiguous continuations, role conflicts, unknown new segments or noninjective rejects. The second generation required **no retired-address promotion** (`generation_reuses=0`). Separately, the SDK watched-copy observer reported complete six-key conceptual phases for the same first-two-wave 2+1 schedule, with **no renderer↔StableEntity-ID join and no shared clock**.
+
+**Reusable conclusion:** for original 0.6.3 lane-minion presentation, a fail-closed conceptual key can be reconstructed at the renderer layer from **logical spawn generation + role + slot + lane + side** without treating pointer equality as identity. This is sufficient to justify a diagnostic per-slot artwork experiment, provided ambiguous/unqualified callbacks fall back to role-only presentation and no simulation authority is inferred. It does **not** establish an authoritative native wave/slot field, StableEntity identity, champion abilities, expanded waves, jungle, multiplayer or 0.7.0 behavior.
+
+Origin: Creep Chaos Probe 014E. Raw log and transient addresses/IDs remain private.
