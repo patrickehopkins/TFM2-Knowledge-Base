@@ -1,5 +1,21 @@
 # Native chat UI ownership and refresh behavior
 
+## 0.6.3: writing colored chat text and champion portraits
+
+**Status: runtime verified for text updates, orange speaker markup and portrait painting; 2026-10-13.** Source: Flame Simulator **Probe 0.3.4**, physically run against the original TFM2 **v0.6.3** executable SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f`, stable SDK/host **ABI 9**, Windows build. Owning project documentation: `docs/CHAT-0.3.4-FINDINGS.md` and `verification/0.3.4.json`.
+
+**Method:** an independently owned `ingame` sibling (not a native `chat_list` child) used the game's `asset/base/ui/layout/ingame_component/chat` template. On its `chat.text` label, `ui_set_text` changed the diagnostic text twice without rebuilding the node, after approximately **5.04** and **10.08 seconds of diagnostic wall-clock time**. The first write used the native-readback speaker-markup structure with one synthetic color; the second wrote `<#ffa64dff>Flame Probe:<> alternate-color test`. Its existing `chat.icon_slot.icon` node accepted `ui_set_champion_icon` for SDK champion `fighter` at 24 × 24, scale 2.0. No extra image child was required.
+
+**Results:** both writes returned successful and the text was read back intact. A user screenshot independently confirms the **second markup rendered an orange speaker name** and **a champion portrait painted beside it**. The first markup had successful write/readback, but **no screenshot proves its exact painted color**. The plain-label comparison node remained readable/visible through the API, but no screenshot unambiguously demonstrated its painted pixels.
+
+The two owned sibling nodes persisted for roughly **30.25 seconds** through native `chat_list` population changes (0–3 child rows), then were intentionally removed. Automatic capture closed with **2,077 unique sequenced IDs, 0..2076**, zero missing/duplicate IDs and zero reported queue drops; concurrent events did not always appear in numerical file order.
+
+**Important limitation / negative result:** the custom styled message was visibly positioned **above the normal chat feed**, not within the native chat history or scrolling arrangement. Its text-update timing was wall-clock, **not synchronized playback time**. Neither this result nor the portrait appearance establishes native chat dispatch, real speaker attribution, replay seeking, exact frame/time binding, hiding with UI, multi-resolution placement or lifetime inside the game's history. Do not promote a successful sibling UI overlay into proof of native chat event insertion.
+
+**Reusable finding:** when working with independently owned noninteractive game UI, a native template's existing text and portrait child nodes may be updated through stable client SDK methods without directly modifying native chat entries, but visual proof and layout integration must be tested separately. Treat image and markup effects as version-specific to this tested build.
+
+---
+
 ## 0.6.3: independently owned chat-template sibling persists
 
 **Status: runtime verified, including onscreen rendering in one screenshot.** Flame Simulator Probe **0.3.3**, Windows physical game, **2026-10-13**, TFM2 **0.6.3**, host/SDK **ABI 9**. Original executable SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f` (PE timestamp `0x6AC5C567`, image size `0x052D6000`). Originating evidence: `docs/CHAT-0.3.3-FINDINGS.md`, `verification/0.3.3.json` in Flame Simulator.
