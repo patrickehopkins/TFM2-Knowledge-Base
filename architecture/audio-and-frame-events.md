@@ -166,3 +166,19 @@ The project previously mapped Candidate A to RVA `0x00C526A0` by exact-file stat
 
 **Origin:** Berserker Keeps Yelling `docs/PROBE-019-064-FINDINGS.md` (private owner log summarized and sanitized; no raw logs, seeds or third-party audio published). Cross-mod native detour collisions, alternate 0.6.4 fingerprints, multiple simultaneous Berserkers and actual death one-shot playback remain unresolved.
 
+## Source-implemented strict death-audio preemption and safe seek handling (2026-10-14)
+
+**STATUS: DESIGN/SOURCE ONLY; original-game Probe 020 audio not yet tested.** Target is exact TFM2 **0.6.4 / SDK-host ABI 10**, originating mod **Berserker Keeps Yelling v0.0.16 / Probe 020**. Physical predecessor **Probe 019 / v0.0.15** proved a Rage-active player KDA death at tick **7,123**, HUD-projected `would_preempt_rage=true currently_playing=true` and an ordinary Rage-loss WAV stop; it **did not** verify death-specific audio or a punchline.
+
+The next implementation applies these reusable **safety policies** to the player-KDA/HUD projection:
+
+- Require **same-session persistent player KDA increment**, adjacent prior player Rage, matching prior champion entity's Rage interval, and an **actually owned/playing WAV for that exact entity**. Despawn alone or a bare previous alive/positive-HP snapshot cannot authorize a death one-shot.
+- **Reserve each (player, death count, simulation tick) only once per watched simulation session**, with a fixed ledger capacity. Maintain consumed events across local F11 toggles/backward replay seeks; a genuinely new simulation session can clear the ledger.
+- **Stop the owned rant first**, check the native `waveOutReset` result, and only after success open a distinct short sound handle; no audio if the stop fails, the voice was already finished, no matching owner exists or a death sound is currently running. A stop on a nonexistent handle must be a **no-op**.
+- Reject late or seek-crossed events: more than one second of HUD clock jumped in a poll, or the estimated playback tick more than **20 simulation ticks** past the KDA death tick. These are conservative **project design choices**, not empirically measured perfect frame synchronization; high speed can omit legitimate death sounds rather than play them late.
+- Own the one-shot independently so natural Rage continuation does not restart, and stop it on disarm/seek/scene departure. The prototype sound is an **original 500ms in-memory descending PCM chirp**, not third-party audio or a production asset.
+
+**Evidence boundary:** The preceding 019 owner KDA/voice evidence is **runtime verified**; the added 020 audio sequence, bounded one-shot gate, seek freshness rules and fail-closed stop behavior are **source implemented only**. GitHub Actions runner allocation failed before any synthetic steps executed, and there is **no owner audible result** for 020 yet. Exact presentation death frame, other 0.6.4 fingerprints, other mods detouring Candidate A, mixer gain, cross-session seeking and concurrent unit audio remain open.
+
+**Originating project:** `docs/PROBE-020-ORIGINAL-DEATH-AUDIO-RUNBOOK.md`, `src/death_stinger_gate.rs` (project owns detailed tests; no raw log, source paste, personal data or third-party recordings shared).
+
