@@ -10,9 +10,9 @@ This is enough to justify a **guarded role-only presentation experiment**, not e
 
 ## 0.6.4 migration status — 2026-10-14
 
-**PARTIAL PHYSICAL MIGRATION PASS; presentation substitution itself remains disabled.** Creep Chaos v0.0.35 physically ran on exact TFM2 **0.6.4 / stable ABI10** using the independently relocated world-resource resolver `0x02AAB520` and animation-key resolver `0x02AB4400`. Both detours executed and returned from their original functions successfully in a deliberately **read-only entry-smoke** mode. The run performed **no old private view-field read and no artwork mutation**.
+**PARTIAL PHYSICAL MIGRATION PASS + STATIC LAYOUT REVALIDATION; role-only runtime restoration is the next gate.** Creep Chaos v0.0.35 physically ran on exact TFM2 **0.6.4 / stable ABI10** using the independently relocated world-resource resolver `0x02AAB520` and animation-key resolver `0x02AB4400`. Both detours executed and returned from their original functions successfully in a deliberately **read-only entry-smoke** mode. The run performed no private view-field read and no artwork mutation.
 
-Therefore the 0.6.4 **entry/trampoline paths are physically alive**, but the 0.6.3 private layouts must still not be transplanted blindly. Before restoring Knight/Archer substitution, independently revalidate the owned-string `+0/+8/+0x10`, resource-view `+0x58/+0x60`, animation-view `+0x40/+0x48` and `+0x70/+0x78` assumptions. The project has a bounded local exact-build scanner for this purpose; its JSON result is still pending.
+The subsequently supplied exact-build layout JSON has now independently revalidated the owned-string `+0/+8/+0x10`, resource-view `+0x58/+0x60`, animation-view `+0x40/+0x48` and action `+0x70/+0x78` shapes as **static runtime-test candidates**. Creep Chaos v0.0.36 is therefore prepared to restore only melee->Knight / ranged->Archer mutation with fail-closed exact-string and capacity checks. Per-slot Lancer selection remains disabled while the same run observation-checks primary return `0x02AAF7CE` and `view+0x17C`.
 
 Separately, the same 0.6.4 run physically revalidated the **simulation-side** 2+1 conceptual lane-slot model across **49 complete waves**, but no renderer↔simulation join was enabled. Do not interpret that as 0.6.4 per-slot presentation proof.
 
