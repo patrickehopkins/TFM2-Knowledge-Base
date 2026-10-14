@@ -7,6 +7,7 @@ Independent, **version-sensitive** research into Teamfight Manager 2 (TFM2) modd
 - [Contributing and evidence rules](CONTRIBUTING.md)
 - [Provenance and source projects](research/source-index.md)
 - [Game/build compatibility](game-versions/compatibility.md)
+- [0.6.4 / stable ABI 10 changes and project impact](game-versions/0.6.4-sdk-impact.md)
 - [Simulation and replay separation](architecture/simulation-and-replay.md)
 - [Native chat UI ownership and refresh behavior](architecture/chat-presentation.md)
 - [Multiplayer authority, synchronization, and networking research](architecture/multiplayer-authority-and-networking.md)
