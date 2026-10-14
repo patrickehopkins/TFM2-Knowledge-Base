@@ -1,5 +1,21 @@
 # Native chat UI ownership and refresh behavior
 
+## 0.6.3: independently owned chat-template sibling persists
+
+**Status: runtime verified, including onscreen rendering in one screenshot.** Flame Simulator Probe **0.3.3**, Windows physical game, **2026-10-13**, TFM2 **0.6.3**, host/SDK **ABI 9**. Original executable SHA-256 `f21cf691799a83d9afa0ccae3e2b95862f5780446a501ee97860b91b752dbe2f` (PE timestamp `0x6AC5C567`, image size `0x052D6000`). Originating evidence: `docs/CHAT-0.3.3-FINDINGS.md`, `verification/0.3.3.json` in Flame Simulator.
+
+**Method:** using the stable client UI API, the observer created two uniquely owned **siblings of** `ingame.chat_list` beneath the visible `ingame` parent. One used an `empty` container + `ui_spawn_template("asset/base/ui/layout/ingame_component/chat")` + `ui_set_text` on its child `chat.text`; the other was a basic `label` with distinct synthetic text. No native chat-list child was inserted, and no chat storage, player inputs or simulation/AI were modified. Start, sampling and cleanup were automatic; no hand-timed markers.
+
+**Positive observations:** both elements successfully spawned, held their original text and reported visible with positive **500 × 30** UI rectangles after layout. They survived all **120** half-second polling cycles across approximately **60.13 seconds** (25 sparse/transition observations in the log, each with both children present). In that window the native `chat_list` varied among **0–3** children; the independent siblings persisted. Both were intentionally removed successfully when the bounded probe ended. A separate user screenshot visibly shows the *native-template sibling's synthetic text alongside normal game chat*, proving it was painted in at least one frame. The plain label was readable and `ui_visible=true`, but its onscreen painting is **not** independently established from that screenshot.
+
+**Negative/control and limits:** Contrast with Probe 0.3.2 below, whose diagnostic child inserted directly **inside** `chat_list` vanished within 258 ms. The difference supports a UI-ownership boundary, **not** the identity of an underlying native refresh method. A sibling surface remains **outside native chat history, ordering, timestamps, speaker attribution and automatic replay handling**. Whether custom elements hide with chat, scale across resolutions, and correctly pause/seek at replay time remains untested. Stable UI polling is not a sample-accurate presentation clock. Results apply to this exact game build/SDK and must be revalidated on future versions.
+
+**Reusable technique:** for noninteractive custom presentation alongside game-owned dynamic lists, consider adding a uniquely owned child to a more stable common parent **outside** the list rather than attaching it to a list rebuilt by native logic. Guard collisions, track ownership, bound polling, clean up on lifetime/scene exit, and separately verify painted output; readable UI nodes alone are insufficient.
+
+**Evidence quality:** auto-completed 2,229 unique sequenced captured events with zero reported queue/event drops. Original screenshot, raw ZIP/JSONL and local identifiers remain private; no game assets are redistributed. This independently verified presentation method can be investigated by other UI mods, but is **not proof of native chat event injection**.
+
+---
+
 ## 0.6.3: one-shot custom chat child disappears
 
 **Status: runtime verified (appearance in the SDK UI tree and disappearance); cause is a hypothesis.**
