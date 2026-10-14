@@ -2,6 +2,12 @@
 
 **Status: RUNTIME VERIFIED** for original melee Knight presentation in Probe 008 and **both melee Knight / ranged Archer role-separated presentation in Probe 011** (Creep Chaos source; private repository), on the [fingerprinted 0.6.3 build](../game-versions/compatibility.md).
 
+## 0.6.4 exact-build layout review — static evidence only
+
+The user-generated bounded 0.6.4 presentation-layout report has now been reviewed. It statically revalidates the resource-role `+0x58/+0x60`, animation-role `+0x40/+0x48`, animation-action `+0x70/+0x78`, and owned-string `+0/+8/+0x10` shapes inside the exact relocated resolver functions. It also relocates the historical primary paired caller to resource return `0x02AAF7CE` and finds its original-style `view+0x17C` read at `0x02AAF73E`.
+
+This is enough to justify a **guarded role-only presentation experiment**, not enough to claim a physical 0.6.4 Knight/Archer pass or re-enable per-slot Lancer selection. A third paired caller remains semantically unclassified because its historical "shared" internal offsets shifted.
+
 ## 0.6.4 migration status — 2026-10-14
 
 **PARTIAL PHYSICAL MIGRATION PASS; presentation substitution itself remains disabled.** Creep Chaos v0.0.35 physically ran on exact TFM2 **0.6.4 / stable ABI10** using the independently relocated world-resource resolver `0x02AAB520` and animation-key resolver `0x02AB4400`. Both detours executed and returned from their original functions successfully in a deliberately **read-only entry-smoke** mode. The run performed **no old private view-field read and no artwork mutation**.
