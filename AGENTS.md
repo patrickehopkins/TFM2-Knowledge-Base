@@ -36,3 +36,9 @@ Before publishing, inspect added files and diffs for credentials, email addresse
 - Versions and exact-build constraints remain visible.
 - No unsupported claims of compatibility, gameplay authority, safety, or successful testing.
 - Report the changed files, evidence used, and any unverified questions or blocked cross-repo updates.
+
+## Current migration target: game 0.6.4 / stable SDK ABI 10 (2026-10-14)
+
+The user's intended **active development baseline is 0.6.4**, not continued 0.6.3 development. Preserve 0.6.3 results as historical baselines only; do not defer migration merely because previous builds were runtime verified. The [0.6.4 SDK audit](game-versions/0.6.4-sdk-impact.md) and [independently relocated shared native entry points](game-versions/0.6.4-native-relocation.md) are the required starting points for project-specific migration. The shared [read-only executable verifier](scripts/verify_tfm2_064_native.py) passed against the original uploaded 0.6.4 image.
+
+**Do not request duplicate uploads of the same 0.6.4 EXE/SDK** merely to reproduce established ABI signatures and native locations. Use the documented exact SHA/PE version guards, SDK v10, RVAs, entry prologues and semantic checks. The originating project must still update its own code and run a **short** in-game smoke test; do not confuse static hook relocation with gameplay verification. Other version-specific hooks and camera object layouts that are not explicitly documented remain open; prefer read-only local scanners that emit bounded text reports over requesting another proprietary executable upload. Do not publish the game or SDK binary itself.
