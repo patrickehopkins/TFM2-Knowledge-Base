@@ -2,6 +2,16 @@
 
 **Status: RUNTIME VERIFIED** for original melee Knight presentation in Probe 008 and **both melee Knight / ranged Archer role-separated presentation in Probe 011** (Creep Chaos source; private repository), on the [fingerprinted 0.6.3 build](../game-versions/compatibility.md).
 
+## 0.6.4 migration status — 2026-10-14
+
+**PARTIAL PHYSICAL MIGRATION PASS; presentation substitution itself remains disabled.** Creep Chaos v0.0.35 physically ran on exact TFM2 **0.6.4 / stable ABI10** using the independently relocated world-resource resolver `0x02AAB520` and animation-key resolver `0x02AB4400`. Both detours executed and returned from their original functions successfully in a deliberately **read-only entry-smoke** mode. The run performed **no old private view-field read and no artwork mutation**.
+
+Therefore the 0.6.4 **entry/trampoline paths are physically alive**, but the 0.6.3 private layouts must still not be transplanted blindly. Before restoring Knight/Archer substitution, independently revalidate the owned-string `+0/+8/+0x10`, resource-view `+0x58/+0x60`, animation-view `+0x40/+0x48` and `+0x70/+0x78` assumptions. The project has a bounded local exact-build scanner for this purpose; its JSON result is still pending.
+
+Separately, the same 0.6.4 run physically revalidated the **simulation-side** 2+1 conceptual lane-slot model across **49 complete waves**, but no renderer↔simulation join was enabled. Do not interpret that as 0.6.4 per-slot presentation proof.
+
+See [0.6.4 native relocation](../game-versions/0.6.4-native-relocation.md) and the originating Creep Chaos sanitized runtime findings.
+
 Native `melee_minion` entities were displayed with Knight champion artwork/animations **without converting their underlying simulation identity into champions**. Runtime observer still reported `champion=false`, `minion=true`. Lane movement and combat were observed in screenshots; native wave lifecycle and creep identity stayed intact.
 
 ## Why an initial attempt turned invisible
